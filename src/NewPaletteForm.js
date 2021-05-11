@@ -4,6 +4,7 @@ import NewPaletteNav from './NewPaletteNav';
 import PaletteSubmitForm from './PaletteSubmitForm';
 import DraggableColorList from './DraggableColorList';
 
+import { Prompt } from 'react-router-dom';
 import chroma from 'chroma-js';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
@@ -41,11 +42,9 @@ export default class NewPaletteForm extends Component {
       },
       paletteNameError: '',
       showSidebar: true,
-      showSubmission: false
+      showSubmission: false,
+      exitBlock: true 
     }
-
-    this.currentPathname = null;
-    this.currentSearch = null;
 
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this)
     this.handleOpenInput = this.handleOpenInput.bind(this)
@@ -57,7 +56,7 @@ export default class NewPaletteForm extends Component {
     this.handleEmojiChange = this.handleEmojiChange.bind(this)
     this.handleEmojiDialog = this.handleEmojiDialog.bind(this)
     this.handleConfirmDialog = this.handleConfirmDialog.bind(this)
-    this.handleOnBackButtonEvent = this.handleOnBackButtonEvent.bind(this)
+    this.handleBrowserBack = this.handleBrowserBack.bind(this)
 
     this.updatePalette = this.updatePalette.bind(this)
     this.clearPalette = this.clearPalette.bind(this)
@@ -66,42 +65,10 @@ export default class NewPaletteForm extends Component {
   
   componentDidMount() {
     const { palettes } = this.props; 
-    // window.addEventListener('popstate', this.handleOnBackButtonEvent)
-    
-    // history.listen((newLocation, action) => {
-    //   if (action === 'PUSH') {
-    //     if (
-    //       newLocation.pathname !== this.currentPathname ||
-    //       newLocation.search !== this.currentSearch
-    //     ) {
-    //       console.log('pushed')
-    //       this.currentPathname = newLocation.pathname
-    //       this.currentSearch = newLocation.search 
-
-    //       history.push({
-    //         pathname: newLocation.pathname,
-    //         search: newLocation.search
-    //       })
-    //     }
-    //   } else {
-    //     history.go(1)
-    //   }
-    // })
     
     ValidatorForm.addValidationRule('isPaletteNameUnique', value => {
       return palettes.every(({ paletteName }) => value.toLowerCase() !== paletteName.toLowerCase() )
     });
-  }
-
-  componentWillUnmount() {
-    if (this.props.history.action == 'POP') {
-      console.log('NO')
-      return false
-    }
-  }
-
-  handleOnBackButtonEvent(e) {
-    e.preventDefault();
   }
   
   handleCloseInput(e) {
@@ -157,8 +124,12 @@ export default class NewPaletteForm extends Component {
   }
 
   handleConfirmDialog() {
-    console.log('opening confirmation')
     this.setState({ showSubmission: 'pickConfirm' })
+  }
+
+  handleBrowserBack() {
+    this.handleConfirmDialog()
+    return false
   }
 
   handleAddPalette() {    
@@ -173,7 +144,9 @@ export default class NewPaletteForm extends Component {
 
   handleExit() {
     localStorage.removeItem('currentEdit')
-    this.props.history.push('/')
+    this.setState({ exitBlock: false }, () => {
+      this.props.history.push('/')
+    })
   }
 
   clearPalette() {
@@ -195,10 +168,12 @@ export default class NewPaletteForm extends Component {
   }
 
   render() {
-    const { showSidebar, showSubmission, paletteForm: { colors, paletteName, emoji }} = this.state 
+    const { showSidebar, showSubmission, exitBlock, paletteForm: { colors, paletteName }} = this.state 
 
     return (
       <div className="NewPaletteForm">
+        <Prompt when={exitBlock} message={this.handleBrowserBack} />
+
         {/* Dialog Integration for clicking 'Save Palette' */}
         <PaletteSubmitForm
           open={showSubmission}
