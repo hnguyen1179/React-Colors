@@ -1,29 +1,25 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import './NewPaletteForm.scss'
 
 export default class NewPaletteNav extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClickBack = this.handleClickBack.bind(this)
-  }
-
-  handleClickBack(e) {
-    e.stopPropagation();
-    localStorage.removeItem('currentEdit')
-
-    // Prompt a 'do you want to save the current palette?'
-    // if no -> go back 
-    // if yes -> open savePalette prompt 
-  }
 
   render() {
     const { 
-      handleOpenInput,
       showSidebar, 
       handleSidebarToggle, 
+      handleOpenInput,
+      handleCloseInput,
+      handleConfirmDialog,
+      open,
+      handleExit
     } = this.props;
 
     const renderShowTool = (
@@ -43,14 +39,34 @@ export default class NewPaletteNav extends Component {
           </div>
 
           <div className="NewPaletteForm__main__nav__content--right">
-            <button onClick={this.handleClickBack}>
-              <Link to="/">
-                Go Back
-              </Link>
+            <button onClick={handleConfirmDialog}>
+              Go Back
             </button>
             <button onClick={handleOpenInput}>Save Palette</button>
           </div>
         </div>
+
+        <Dialog
+          open={open == 'pickConfirm'}
+          onClose={handleCloseInput}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Leave without saving palette?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Any work done on an unsaved palette will be lost. Are you sure you want to leave without saving?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleExit} color="primary">
+              Leave
+            </Button>
+            <Button onClick={handleCloseInput} color="primary" autoFocus>
+              Stay
+            </Button>
+          </DialogActions>
+        </Dialog>
       </nav>
     )
   }

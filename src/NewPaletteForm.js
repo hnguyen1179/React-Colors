@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import NewPaletteSidebar from './NewPaletteSidebar'
 import NewPaletteNav from './NewPaletteNav';
-import DraggableColorList from './DraggableColorList';
 import PaletteSubmitForm from './PaletteSubmitForm';
+import DraggableColorList from './DraggableColorList';
 
 import chroma from 'chroma-js';
-import Picker from 'emoji-picker-react';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import { Button } from '@material-ui/core';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import './NewPaletteForm.scss'
 
@@ -36,52 +34,92 @@ export default class NewPaletteForm extends Component {
     // TO DO: Make updating palettes in edit form work with session storage 
     this.state = {
       paletteForm: {
-        paletteName: "",
-        id: "",
-        emoji: "",
+        paletteName: '',
+        id: '',
+        emoji: '',
         colors: JSON.parse(localStorage.getItem('currentEdit')) || seed
       },
-      paletteNameError: "",
+      paletteNameError: '',
       showSidebar: true,
       showSubmission: false
     }
+
+    this.currentPathname = null;
+    this.currentSearch = null;
 
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this)
     this.handleOpenInput = this.handleOpenInput.bind(this)
     this.handleCloseInput = this.handleCloseInput.bind(this)
     this.handleAddPalette = this.handleAddPalette.bind(this)
+    this.handleExit = this.handleExit.bind(this)
     this.handleDeleteColor = this.handleDeleteColor.bind(this)
     this.handleOnTextChange = this.handleOnTextChange.bind(this)
     this.handleEmojiChange = this.handleEmojiChange.bind(this)
+    this.handleEmojiDialog = this.handleEmojiDialog.bind(this)
+    this.handleConfirmDialog = this.handleConfirmDialog.bind(this)
+    this.handleOnBackButtonEvent = this.handleOnBackButtonEvent.bind(this)
 
     this.updatePalette = this.updatePalette.bind(this)
     this.clearPalette = this.clearPalette.bind(this)
     this.fontColor = this.fontColor.bind(this)
-
   }
-  handleCloseInput(e) {
-    this.setState({ showSubmission: false })
-  }
-
-  handleOpenInput(e) {
-    e.stopPropagation();
-    this.setState({ showSubmission: true })
-  }
-
+  
   componentDidMount() {
     const { palettes } = this.props; 
+    // window.addEventListener('popstate', this.handleOnBackButtonEvent)
+    
+    // history.listen((newLocation, action) => {
+    //   if (action === 'PUSH') {
+    //     if (
+    //       newLocation.pathname !== this.currentPathname ||
+    //       newLocation.search !== this.currentSearch
+    //     ) {
+    //       console.log('pushed')
+    //       this.currentPathname = newLocation.pathname
+    //       this.currentSearch = newLocation.search 
 
-    ValidatorForm.addValidationRule("isPaletteNameUnique", value => {
+    //       history.push({
+    //         pathname: newLocation.pathname,
+    //         search: newLocation.search
+    //       })
+    //     }
+    //   } else {
+    //     history.go(1)
+    //   }
+    // })
+    
+    ValidatorForm.addValidationRule('isPaletteNameUnique', value => {
       return palettes.every(({ paletteName }) => value.toLowerCase() !== paletteName.toLowerCase() )
     });
   }
+
+  componentWillUnmount() {
+    if (this.props.history.action == 'POP') {
+      console.log('NO')
+      return false
+    }
+  }
+
+  handleOnBackButtonEvent(e) {
+    e.preventDefault();
+  }
+  
+  handleCloseInput(e) {
+    this.setState({ showSubmission: false })
+  }
+  
+  handleOpenInput(e) {
+    e.stopPropagation();
+    this.setState({ showSubmission: 'pickPaletteName' })
+  }
+  
 
   fontColor(color) {
     return chroma(color).luminance() > 0.5 ? 'font-black' : 'font-white'
   }
 
   convertPaletteName(name) {
-    return name.split(" ").map(x => x.toLowerCase()).join("-")
+    return name.split(' ').map(x => x.toLowerCase()).join('-')
   }
 
   handleSidebarToggle(e) {
@@ -103,13 +141,24 @@ export default class NewPaletteForm extends Component {
     })
   }
 
-  handleEmojiChange(e, emoji) {
+  handleEmojiChange(emojiObj, e) {
     this.setState({
       paletteForm: {
         ...this.state.paletteForm,
-        emoji: emoji.emoji
+        emoji: emojiObj.native
       }
+    }, () => {
+      this.handleAddPalette()
     })
+  }
+
+  handleEmojiDialog() {
+    this.setState({ showSubmission: 'pickEmoji' })
+  }
+
+  handleConfirmDialog() {
+    console.log('opening confirmation')
+    this.setState({ showSubmission: 'pickConfirm' })
   }
 
   handleAddPalette() {    
@@ -119,15 +168,20 @@ export default class NewPaletteForm extends Component {
     }
 
     this.props.savePalette(newPalette);
-    this.props.history.push("/")
+    this.props.history.push('/')
+  }
+
+  handleExit() {
+    localStorage.removeItem('currentEdit')
+    this.props.history.push('/')
   }
 
   clearPalette() {
     this.setState({
       paletteForm: {
-        paletteName: "",
+        paletteName: '',
         colors: [],
-        emoji: ""
+        emoji: ''
       }
     })
   }
@@ -145,49 +199,26 @@ export default class NewPaletteForm extends Component {
 
     return (
       <div className="NewPaletteForm">
-        {/* Palette Save Form */}
-        {/* <div 
-          className={`NewPaletteForm__palette-input ${showSubmission && 'show'}`} 
-        >
-          <ValidatorForm
-            onClick={this.handlePreventBodyClick}
-            onSubmit={this.handleAddPalette}
-          >
-            <TextValidator
-              value={paletteName ?? ""}
-              onChange={this.handleOnTextChange}
-              validators={["required", "isPaletteNameUnique"]}
-              errorMessages={["Name cannot be blank", "Cannot have duplicate palette names"]}
-            />
-
-            <div>
-              {emoji}
-            </div>
-
-            <Picker onEmojiClick={this.handleEmojiChange} />
-            
-            <Button type="submit"> submit </Button>
-          </ValidatorForm>
-        </div> */}
-
-        {/* Dialog Integration */}
+        {/* Dialog Integration for clicking 'Save Palette' */}
         <PaletteSubmitForm
           open={showSubmission}
-          handleClose={this.handleCloseInput}
+          handleCloseInput={this.handleCloseInput}
           handleOnTextChange={this.handleOnTextChange}
           handleEmojiChange={this.handleEmojiChange}
-          handleAddPalette={this.handleAddPalette}
+          handleEmojiDialog={this.handleEmojiDialog}
           paletteName={paletteName}
-          emoji={emoji}
         />
 
         {/* Main Content of New Palette */}
         <main className={`NewPaletteForm__main ${showSidebar && 'show'}`}>
           <NewPaletteNav 
+            open={showSubmission}
             showSidebar={showSidebar}
             handleSidebarToggle={this.handleSidebarToggle}
             handleOpenInput={this.handleOpenInput}
-            handleAddPalette={this.handleAddPalette}
+            handleCloseInput={this.handleCloseInput}
+            handleConfirmDialog={this.handleConfirmDialog}
+            handleExit={this.handleExit}
           />
           <div className="NewPaletteForm__main__content">
             <DraggableColorList 
@@ -202,12 +233,12 @@ export default class NewPaletteForm extends Component {
 
         {/* New Palette Sidebar */}
         <NewPaletteSidebar 
-          paletteColors={colors}
-          handleSidebarToggle={this.handleSidebarToggle}
-          updatePalette={this.updatePalette}
-          clearPalette={this.clearPalette}
           showSidebar={showSidebar}
+          handleSidebarToggle={this.handleSidebarToggle}
           fontColor={this.fontColor}
+          clearPalette={this.clearPalette}
+          paletteColors={colors}
+          updatePalette={this.updatePalette}
         />
       </div>
     )

@@ -10,6 +10,7 @@ function DraggableColorList({ colors, fontColor, handleDeleteColor }) {
         colors.map(({ colorName, color }, index) => {
           return (
             <DraggableColorBox 
+              key={color}
               index={index}
               colorName={colorName}
               color={color}

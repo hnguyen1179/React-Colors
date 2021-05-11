@@ -11,13 +11,13 @@ export default class NewPaletteSidebar extends Component {
 
     this.state = {
       colorForm: {
-        colorName: "",
-        color: "#ffffff",
+        colorName: '',
+        color: '#ffffff',
       },
       colorFormErrors: {
-        colorNameError: "",
-        colorError: "",
-        colorPaletteError: ""
+        colorNameError: '',
+        colorError: '',
+        colorPaletteError: ''
       }
     }
 
@@ -30,7 +30,6 @@ export default class NewPaletteSidebar extends Component {
   // Saves into localStorage the currentEdit
   componentDidUpdate(prevProps, prevState) {
     if (this.props.paletteColors.length != prevProps.paletteColors.length) {
-      console.log('STORED')
       const stringy = JSON.stringify(this.props.paletteColors);
       localStorage.setItem('currentEdit', stringy);
     }
@@ -42,8 +41,8 @@ export default class NewPaletteSidebar extends Component {
       return {
         ...previous,
         colorFormErrors: {
-          colorNameError: "",
-          color: ""
+          colorNameError: '',
+          color: ''
         }
       }
     })
@@ -55,7 +54,7 @@ export default class NewPaletteSidebar extends Component {
         ...previous,
         colorForm: {
           color: previous.colorForm.color,
-          colorName: ""
+          colorName: ''
         }
       }
     })
@@ -66,14 +65,14 @@ export default class NewPaletteSidebar extends Component {
     const { paletteColors } = this.props;
     const { colorName, color } = this.state.colorForm;
 
-    let colorNameError = ""
-    let colorError = ""
-    let colorPaletteError = ""
+    let colorNameError = ''
+    let colorError = ''
+    let colorPaletteError = ''
     
     const fullPalette = paletteColors.length === 20
     
     if (fullPalette) {
-      colorPaletteError = "Palette is full"
+      colorPaletteError = 'Palette is full'
     }
     
     if (options.randomColor) {
@@ -95,12 +94,12 @@ export default class NewPaletteSidebar extends Component {
     const duplicateName = paletteColors.some(colorObj => colorObj.colorName.toLowerCase() === colorName.toLowerCase())
 
     if (nameLength) {
-      colorNameError = "Name cannot be blank"
+      colorNameError = 'Name cannot be blank'
     }
 
     if (duplicateColor) {
       colorError = (
-        <div className="color-error">
+        <div className='color-error'>
           Cannot have duplicate color: <div style={{ backgroundColor: color, border: '1px solid rgba(0, 0, 0, 0.212)' }}/>
         </div>
       )

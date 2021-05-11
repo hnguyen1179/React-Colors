@@ -6,36 +6,35 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { Picker } from 'emoji-mart'
 
 import './PaletteSubmitForm.scss';
+import 'emoji-mart/css/emoji-mart.css'
 
 
 class PaletteSubmitForm extends Component {
 
   render() {
     const { 
-      paletteName, 
-      emoji, 
       open, 
-      handleClose, 
+      handleCloseInput, 
       handleOnTextChange, 
       handleEmojiChange,
-      handleAddPalette 
+      handleEmojiDialog, 
+      paletteName
     } = this.props;
 
     return (
       <>
-        <Dialog className="PaletteSubmitForm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Naming Your Palette</DialogTitle>
+        <Dialog className="PaletteSubmitForm" open={open == 'pickPaletteName'} onClose={handleCloseInput} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Palette Name</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please enter a palette name for your new palette. Make sure it's unique!
             </DialogContentText>
-            <ValidatorForm
-              onSubmit={handleAddPalette}
-              >
+            <ValidatorForm onSubmit={handleEmojiDialog}>
               <TextValidator
-              label="Palette Name"
+                label="Palette Name"
                 value={paletteName ?? ""}
                 onChange={handleOnTextChange}
                 validators={["required", "isPaletteNameUnique"]}
@@ -44,14 +43,24 @@ class PaletteSubmitForm extends Component {
                 margin="normal"
               />    
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={handleCloseInput} color="primary">
                 Cancel
               </Button>
               <Button type="submit" color="primary">
-                Submit
+                Next
               </Button>
             </DialogActions>
           </ValidatorForm>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={open == 'pickEmoji'} onClose={handleCloseInput}>
+          <DialogTitle id="form-dialog-title">Emoji</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Pick an emoji to represent your new palette
+            </DialogContentText>
+            <Picker onClick={handleEmojiChange}/>
           </DialogContent>
         </Dialog>
       </>

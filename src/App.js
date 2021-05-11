@@ -33,7 +33,7 @@ export default class App extends Component {
     const { palettes } = this.state;
 
     let palette = palettes.find(palette => palette.id === paletteId)
-    if (palette === undefined) return <Redirect to="/" /> 
+    if (palette === undefined) return <Redirect to='/' /> 
 
     return (
       <Palette palette={addColorRange(palette)} />
