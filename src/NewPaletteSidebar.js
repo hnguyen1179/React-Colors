@@ -29,8 +29,11 @@ export default class NewPaletteSidebar extends Component {
 
   // Saves into localStorage the currentEdit
   componentDidUpdate(prevProps, prevState) {
-    const stringy = JSON.stringify(this.props.paletteColors);
-    localStorage.setItem('currentEdit', stringy);
+    if (this.props.paletteColors.length != prevProps.paletteColors.length) {
+      console.log('STORED')
+      const stringy = JSON.stringify(this.props.paletteColors);
+      localStorage.setItem('currentEdit', stringy);
+    }
   }
 
   // UTILITY FUNCTIONS

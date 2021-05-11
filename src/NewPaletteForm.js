@@ -112,7 +112,7 @@ export default class NewPaletteForm extends Component {
     })
   }
 
-  handleAddPalette() {
+  handleAddPalette() {    
     const newPalette = {
       ...this.state.paletteForm,
       id: this.convertPaletteName(this.state.paletteForm.paletteName),

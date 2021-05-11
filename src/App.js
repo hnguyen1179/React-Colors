@@ -7,8 +7,6 @@ import SingleColorPalette from './SingleColorPalette';
 import PaletteList from './PaletteList';
 import NewPaletteForm from './NewPaletteForm';
 
-import { v4 as uuidv4 } from 'uuid';
-
 import './App.scss';
 export default class App extends Component {
   constructor(props) {
@@ -25,6 +23,7 @@ export default class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    localStorage.removeItem('currentEdit');
     const jsonPalette = JSON.stringify(this.state.palettes);
     localStorage.setItem('palettes', jsonPalette)
   }
