@@ -26,19 +26,22 @@ class PaletteSubmitForm extends Component {
     return (
       <>
         <Dialog className="PaletteSubmitForm" open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Palette Name</DialogTitle>
+          <DialogTitle id="form-dialog-title">Naming Your Palette</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Enter a valid palette name 
+              Please enter a palette name for your new palette. Make sure it's unique!
             </DialogContentText>
             <ValidatorForm
               onSubmit={handleAddPalette}
-            >
+              >
               <TextValidator
+              label="Palette Name"
                 value={paletteName ?? ""}
                 onChange={handleOnTextChange}
                 validators={["required", "isPaletteNameUnique"]}
                 errorMessages={["Name cannot be blank", "Cannot have duplicate palette names"]}
+                fullWidth
+                margin="normal"
               />    
             <DialogActions>
               <Button onClick={handleClose} color="primary">
