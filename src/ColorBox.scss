@@ -1,0 +1,134 @@
+.ColorBox {
+  width: 20%;
+  margin: 0;
+  /* display: inline-block; */
+  position: relative;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-bottom: -3.5px;
+}
+
+.copy-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0);
+}
+
+.copy {
+  width: 100px;
+  height: 30x;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  outline: none;
+  background: rgba(0, 0, 0, 0.493);
+  color: white;
+  line-height: 30px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  text-transform: uppercase;
+}
+
+.copy-container:hover .copy {
+  opacity: 1;
+  transition: 0.5s;
+}
+
+.box-content {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 10px;
+  color: black;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.more {
+  background: rgba(255, 255, 255, 0.3);
+  position: absolute;
+  border: none;
+  right: 0;
+  bottom: 0;
+  color: white;
+  width: 60px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  overflow: hidden;
+}
+
+.more::before,
+.more::after {
+  content: "";
+  height: 100px;
+  width: 6px;
+  background: white;
+  z-index: 10;
+  position: absolute;
+  left: -50%;
+  top: -200%;
+  transform: rotate(22deg);
+}
+
+.more::after {
+  width: 3px;
+  left: -70%;
+}
+
+.more:hover::before,
+.more:hover::after {
+  transform: rotate(22deg) translateX(8rem); 
+  transition: 600ms ease-in-out;
+}
+
+.copy-overlay {
+  opacity: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  transform: scale(0.5);
+  transition: transform 0.8s ease-in-out;
+}
+
+.copy-overlay.show {
+  position: absolute;
+  opacity: 1;
+  transform: scale(30);
+  z-index: 5; 
+}
+
+.copy-overlay-text {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0.1);
+  opacity: 0;
+  color: white;
+  z-index: -1;
+}
+
+.copy-overlay-text h1 {
+  font-size: 4rem;
+}
+
+.copy-overlay-text.show {
+  transform: scale(1);
+  opacity: 1;
+  z-index: 5;
+  transition: 250ms ease-in-out;
+  transition-delay: 0.2s;
+}

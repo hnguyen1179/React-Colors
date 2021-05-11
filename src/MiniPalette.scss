@@ -1,0 +1,37 @@
+.MiniPalette {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: rgb(255, 255, 255);
+}
+
+.MiniPalette__colorboxes {
+  height: 80%;
+  margin: 0.5rem;
+  margin-bottom: 0rem;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.075);
+}
+
+.MiniPalette__bottom {
+  height: 20%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.MiniPalette__bottom h1 {
+  font-size: 0.7rem;
+  display: inline;
+}
+
+.Mini_Palette__colorboxes__colorbox {
+  width: 20%;
+  height: 25%;
+}
