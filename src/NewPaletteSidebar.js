@@ -11,25 +11,22 @@ export default class NewPaletteSidebar extends Component {
 
     this.state = {
       colorForm: {
-        colorName: '',
         color: '#ffffff',
       },
       colorFormErrors: {
-        colorNameError: '',
         colorError: '',
         colorPaletteError: ''
       }
     }
 
     this.handleOnChange = debounce(this.handleOnChange.bind(this), 2)
-    this.handleTextChange = this.handleTextChange.bind(this)
     this.handleAddColor = this.handleAddColor.bind(this)
     this.handleRandomColor = this.handleRandomColor.bind(this)
   }
 
   // Saves into localStorage the currentEdit
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.paletteColors.length != prevProps.paletteColors.length) {
+  componentDidUpdate(prevProps) {
+    if (this.props.paletteColors.length !== prevProps.paletteColors.length) {
       const stringy = JSON.stringify(this.props.paletteColors);
       localStorage.setItem('currentEdit', stringy);
     }
@@ -63,9 +60,8 @@ export default class NewPaletteSidebar extends Component {
   // Error Checker for adding colors 
   isValid(options = { randomColor: false }) {
     const { paletteColors } = this.props;
-    const { colorName, color } = this.state.colorForm;
+    const { color } = this.state.colorForm;
 
-    let colorNameError = ''
     let colorError = ''
     let colorPaletteError = ''
     
@@ -89,13 +85,7 @@ export default class NewPaletteSidebar extends Component {
       return true
     }
     
-    const nameLength = colorName.length === 0
     const duplicateColor = paletteColors.some(colorObj => colorObj.color === color)
-    const duplicateName = paletteColors.some(colorObj => colorObj.colorName.toLowerCase() === colorName.toLowerCase())
-
-    if (nameLength) {
-      colorNameError = 'Name cannot be blank'
-    }
 
     if (duplicateColor) {
       colorError = (
@@ -105,14 +95,9 @@ export default class NewPaletteSidebar extends Component {
       )
     }
 
-    if (duplicateName) {
-      colorNameError = `Cannot have duplicate color name: ${colorName}`
-    }
-
-    if ([fullPalette, nameLength, duplicateColor, duplicateName].some(x => x === true)) {
+    if ([fullPalette, duplicateColor].some(x => x === true)) {
       this.setState({ 
         colorFormErrors: {
-          colorNameError, 
           colorError,
           colorPaletteError
         }
@@ -133,14 +118,6 @@ export default class NewPaletteSidebar extends Component {
     })
   }
 
-  handleTextChange(e) {
-    this.setState({
-      colorForm: { ...this.state.colorForm,
-        colorName: e.target.value
-      }
-    })
-  }
-
   handleAddColor(e) {
     e.preventDefault()
     if (!this.isValid()) return
@@ -151,35 +128,34 @@ export default class NewPaletteSidebar extends Component {
   }
 
   handleRandomColor() {
-    // Checks if full
-    if (!this.isValid({ randomColor: true })) return
+    // // Checks if full
+    // if (!this.isValid({ randomColor: true })) return
 
-    // Custom check to see if current color added isn't already included
-    const currentColors = {};
+    // // Custom check to see if current color added isn't already included
+    // const currentColors = {};
 
-    let colorName = colorNames[Math.floor(Math.random() * colorNames.length)]
-    let duplicate = this.props.paletteColors.some(colorObj => {
-      currentColors[colorObj.colorName.toLowerCase()] = true;
-      return colorObj.colorName.toLowerCase() === colorName.toLowerCase()
-    })
+    // let colorHex = chroma(colorNames[Math.floor(Math.random() * colorNames.length)]).hex()
+    // let duplicate = this.props.paletteColors.some(colorObj => {      
+    //   currentColors[colorObj.color.toLowerCase()] = true;
+    //   return colorObj.color.toLowerCase() === colorHex.toLowerCase()
+    // })
 
-    while (duplicate) {
-      colorName = colorNames[Math.floor(Math.random() * colorNames.length)].toLowerCase();
-      if (!(colorName in currentColors)) duplicate = false;
-    }
+    // while (duplicate) {
+    //   colorHex = chroma(colorNames[Math.floor(Math.random() * colorNames.length)]).hex();
+    //   if (!(colorHex in currentColors)) duplicate = false;
+    // }
 
-    const color = chroma(colorName).hex()
-    const colorObject = {
-      colorName,
-      color
-    }
-    this.props.updatePalette(colorObject)
+    // const colorObject = {
+    //   colorHex
+    // }
+
+    // this.props.updatePalette(colorObject)
   }
 
   render() {
     const { 
-      colorForm: { colorName, color }, 
-      colorFormErrors: { colorNameError, colorError, colorPaletteError } 
+      colorForm: { color }, 
+      colorFormErrors: { colorError, colorPaletteError } 
     } = this.state;
 
     const {
@@ -206,19 +182,13 @@ export default class NewPaletteSidebar extends Component {
         </div>
         <form onSubmit={this.handleAddColor}>
           <ChromePicker 
+            disableAlpha
             color={color}
             onChange={this.handleOnChange}
           />
           <div className="color-input">
-            <input 
-              type="text" 
-              value={colorName} 
-              placeholder={"Color Name"} 
-              onChange={this.handleTextChange}
-            />
             <ul className="error-list">
               <li> {colorPaletteError} </li>
-              <li> {colorNameError} </li>
               <li> {colorError} </li>              
             </ul>
           </div>

@@ -26,7 +26,7 @@ class PaletteSubmitForm extends Component {
 
     return (
       <>
-        <Dialog className="PaletteSubmitForm" open={open == 'pickPaletteName'} onClose={handleCloseInput} aria-labelledby="form-dialog-title">
+        <Dialog className="PaletteSubmitForm" open={open === 'pickPaletteName'} onClose={handleCloseInput} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Palette Name</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -54,7 +54,7 @@ class PaletteSubmitForm extends Component {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={open == 'pickEmoji'} onClose={handleCloseInput}>
+        <Dialog open={open === 'pickEmoji'} onClose={handleCloseInput}>
           <DialogTitle id="form-dialog-title">Emoji</DialogTitle>
           <DialogContent>
             <DialogContentText>

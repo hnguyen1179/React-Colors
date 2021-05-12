@@ -7,12 +7,11 @@ function DraggableColorList({ colors, fontColor, handleDeleteColor }) {
   return (
     <div className="NewPaletteForm__main__content__colorbox-container">
       {
-        colors.map(({ colorName, color }, index) => {
+        colors.map((color, index) => {
           return (
             <DraggableColorBox 
               key={color}
               index={index}
-              colorName={colorName}
               color={color}
               fontColor={fontColor}
               handleDeleteColor={handleDeleteColor}

@@ -12,7 +12,7 @@ function addColorRange(palette) {
   const output = {};
 
   for (let i = 0; i < palette.colors.length; i++) {
-    const { color, colorName } = palette.colors[i];
+    const color = palette.colors[i];
     const colorRange = chroma.scale([chroma(color).darken(1.4), chroma(color), 'white'])
                           .mode('lab')
                           .colors(COLOR_STEPS.length + 1, 'null')
@@ -28,8 +28,6 @@ function addColorRange(palette) {
       let colorObject = {
         hex: chromaInstance.hex(),
         hexNoHash: chromaInstance.hex().slice(1),
-        id: colorName,
-        colorName: `${colorName} ${COLOR_STEPS[j]}`,
         nameColor: inverseLuminance(chroma(chromaInstance.hex()).luminance()),
         rgb: chromaInstance.css(),
         rgba: chromaInstance.css().replace(")", ", 1.0)")
@@ -53,7 +51,6 @@ function addSingleColorRange(palette, color) {
     return {
       hex: colorObj.hex(),
       hexNoHash: colorObj.hex().slice(1),
-      id: color,
       nameColor: inverseLuminance(chroma(colorObj.hex()).luminance()),
       rgb: colorObj.css(),
       rgba: colorObj.css().replace(")", ", 1.0)")

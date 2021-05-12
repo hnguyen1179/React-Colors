@@ -25,12 +25,17 @@ export default class SingleColorPalette extends Component {
 
   render() {
     const { format } = this.state
-    const { colorName, palette } = this.props 
+    const { palette } = this.props 
 
     const renderColorBoxes = (
       palette.colors.map((colorObj, idx) => {
         return (
-          <ColorBox key={idx} nameColor={colorObj.nameColor} singleColorPalette={true} name={`${colorName} ${idx * 100}`} format={colorObj[format]}/>
+          <ColorBox 
+            key={idx} 
+            nameColor={colorObj.nameColor} 
+            singleColorPalette={true} 
+            format={colorObj[format]}
+          />
         )
       })
     )

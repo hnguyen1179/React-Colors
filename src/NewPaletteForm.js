@@ -11,22 +11,22 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import './NewPaletteForm.scss'
 
 const seed = [      
-  { colorName: "FlatFlesh", color: "#fad390" },
-  { colorName: "MelonMelody", color: "#f8c291" },
-  { colorName: "Livid", color: "#6a89cc" },
-  { colorName: "Spray", color: "#82ccdd" },
-  { colorName: "ParadiseGreen", color: "#b8e994" },
-  { colorName: "SquashBlossom", color: "#f6b93b" },
-  { colorName: "MandarinRed", color: "#e55039" },
-  { colorName: "AzraqBlue", color: "#4a69bd" },
-  { colorName: "Dupain", color: "#60a3bc" },
-  { colorName: "AuroraGreen", color: "#78e08f" },
-  { colorName: "IcelandPoppy", color: "#fa983a" },
-  { colorName: "TomatoRed", color: "#eb2f06" },
-  { colorName: "YueGuangBlue", color: "#1e3799" },
-  { colorName: "GoodSamaritan", color: "#3c6382" },
-  { colorName: "Waterfall", color: "#38ada9" },
-  { colorName: "CarrotOrange", color: "#e58e26" }
+  "#fad390",
+  "#f8c291",
+  "#6a89cc",
+  "#82ccdd",
+  "#b8e994",
+  "#f6b93b",
+  "#e55039",
+  "#4a69bd",
+  "#60a3bc",
+  "#78e08f",
+  "#fa983a",
+  "#eb2f06",
+  "#1e3799",
+  "#3c6382",
+  "#38ada9",
+  "#e58e26"
 ]
 
 export default class NewPaletteForm extends Component {
@@ -93,9 +93,9 @@ export default class NewPaletteForm extends Component {
     this.setState({ showSidebar: !this.state.showSidebar })
   }
 
-  handleDeleteColor(id) {
+  handleDeleteColor(colorHex) {
     const { colors } = this.state.paletteForm
-    const newColors = colors.filter(color => color.colorName !== id)
+    const newColors = colors.filter(color => color !== colorHex)
     this.setState({ paletteForm: { colors: newColors }})
   }
 
@@ -133,13 +133,20 @@ export default class NewPaletteForm extends Component {
   }
 
   handleAddPalette() {    
+    const { paletteName, emoji, colors} = this.state.paletteForm
+
     const newPalette = {
-      ...this.state.paletteForm,
+      paletteName: paletteName,
       id: this.convertPaletteName(this.state.paletteForm.paletteName),
+      emoji: emoji,
+      colors: colors
     }
 
-    this.props.savePalette(newPalette);
-    this.props.history.push('/')
+    this.setState({ exitBlock: false }, () => {
+      this.props.savePalette(newPalette);
+      this.props.history.push('/')
+    })
+
   }
 
   handleExit() {

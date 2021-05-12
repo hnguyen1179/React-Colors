@@ -47,7 +47,7 @@ export default class NewPaletteNav extends Component {
         </div>
 
         <Dialog
-          open={open == 'pickConfirm'}
+          open={open === 'pickConfirm'}
           onClose={handleCloseInput}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"

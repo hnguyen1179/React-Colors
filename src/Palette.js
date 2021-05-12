@@ -29,14 +29,12 @@ export default class Palette extends Component {
     const { palette } = this.props;
 
     const renderColorBoxes = (
-      palette.colors[brightness].map((colorObj, i) => {
+      palette.colors[brightness].map((colorObj, i) => {        
         return (
           <ColorBox 
             key={i} 
-            name={colorObj.colorName} 
             format={colorObj[format]} 
-            nameColor={colorObj.nameColor}
-            moreUrl={`/palette/${palette.id}/${colorObj.id.toLowerCase()}`}
+            moreUrl={`/palette/${palette.id}/${colorObj.hexNoHash}`}
           />
         )
       })

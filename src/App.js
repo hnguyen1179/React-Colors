@@ -44,15 +44,17 @@ export default class App extends Component {
   findSinglePalette(renderProps) {
     const { palettes } = this.state;
     const paletteId = renderProps.match.params.id;
-    const colorName = renderProps.match.params.colorName;
+    const hexNoHash = renderProps.match.params.hexNoHash;
     const palette = palettes.find(palette => palette.id === paletteId)
-    const colorObj = palette.colors.find(colorObj => colorObj.colorName.toLowerCase() === colorName)
+    console.log(palette)
+    const color = palette.colors.find(color => {
+      return color.slice(1).toLowerCase() === hexNoHash
+    })
     
     return (
       <SingleColorPalette 
-      renderProps={renderProps} 
-      palette={addSingleColorRange(palette, colorObj.color)} 
-      colorName={colorName} 
+        renderProps={renderProps} 
+        palette={addSingleColorRange(palette, color)} 
       />
     )
   }
@@ -90,7 +92,7 @@ export default class App extends Component {
             }}
           />
           <Route exact path="/palette/:id" render={this.findPalette}/>
-          <Route exact path="/palette/:id/:colorName" render={this.findSinglePalette} />
+          <Route exact path="/palette/:id/:hexNoHash" render={this.findSinglePalette} />
           <Route 
             exact 
             path="/" 

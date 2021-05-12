@@ -5,7 +5,7 @@ export default function MiniPalette(props) {
   const { paletteName, emoji, colors} = props.palette;
   const renderColors = (
     colors.map(color => {
-      return <div key={color.color} className="Mini_Palette__colorboxes__colorbox" style={{ background: color.color }}/>
+      return <div key={color} className="Mini_Palette__colorboxes__colorbox" style={{ background: color }}/>
     })
   )
 
