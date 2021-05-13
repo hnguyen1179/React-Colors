@@ -5,34 +5,15 @@ import PaletteSubmitForm from './PaletteSubmitForm';
 import DraggableColorList from './DraggableColorList';
 
 import { Prompt } from 'react-router-dom';
-import chroma from 'chroma-js';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
 import './NewPaletteForm.scss'
 
-const seed = [      
-  "#fad390",
-  "#f8c291",
-  "#6a89cc",
-  "#82ccdd",
-  "#b8e994",
-  "#f6b93b",
-  "#e55039",
-  "#4a69bd",
-  "#60a3bc",
-  "#78e08f",
-  "#fa983a",
-  "#eb2f06",
-  "#1e3799",
-  "#3c6382",
-  "#38ada9",
-  "#e58e26"
-]
+const seed = []
 
 export default class NewPaletteForm extends Component {
   constructor(props) {
     super(props)
-    // TO DO: Make updating palettes in edit form work with session storage 
     this.state = {
       paletteForm: {
         paletteName: '',
@@ -43,7 +24,12 @@ export default class NewPaletteForm extends Component {
       paletteNameError: '',
       showSidebar: true,
       showSubmission: false,
-      exitBlock: true 
+      exitBlock: true,
+      editColor: {
+        edit: false,
+        color: '#ffffff',
+        originalColor: '#ffffff'
+      }
     }
 
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this)
@@ -58,9 +44,14 @@ export default class NewPaletteForm extends Component {
     this.handleConfirmDialog = this.handleConfirmDialog.bind(this)
     this.handleBrowserBack = this.handleBrowserBack.bind(this)
 
+    this.selectColor = this.selectColor.bind(this)
+    this.cancelEdit = this.cancelEdit.bind(this)
+    this.updateColor = this.updateColor.bind(this)
+    this.changeColor = this.changeColor.bind(this)
+
     this.updatePalette = this.updatePalette.bind(this)
+    this.setPalette = this.setPalette.bind(this)
     this.clearPalette = this.clearPalette.bind(this)
-    this.fontColor = this.fontColor.bind(this)
   }
   
   componentDidMount() {
@@ -78,11 +69,6 @@ export default class NewPaletteForm extends Component {
   handleOpenInput(e) {
     e.stopPropagation();
     this.setState({ showSubmission: 'pickPaletteName' })
-  }
-  
-
-  fontColor(color) {
-    return chroma(color).luminance() > 0.5 ? 'font-black' : 'font-white'
   }
 
   convertPaletteName(name) {
@@ -166,16 +152,79 @@ export default class NewPaletteForm extends Component {
     })
   }
 
-  updatePalette(colorObject) {
+  setPalette(array) {
     this.setState({
       paletteForm: {
-        colors: [...this.state.paletteForm.colors, colorObject]
+        colors: array
+      }
+    }, () => {
+      localStorage.setItem('currentEdit', JSON.stringify(this.state.paletteForm.colors))
+    })
+  }
+
+  // Opens the edit button 
+  selectColor(color) {
+    this.setState({ 
+      editColor: {
+        edit: true,
+        color: color,
+        originalColor: color
+      } 
+    });
+  }
+
+  changeColor(color) {
+    this.setState({
+      editColor: {
+        ...this.state.editColor,
+        color: color
+      }
+    })
+  }
+
+  // Closes the edit buttons
+  cancelEdit() {
+    this.setState({
+      editColor: {
+        edit: false
+      }
+    })
+  }
+
+  updateColor(originalColor, newColor) {
+    const { paletteForm } = this.state;
+
+    const newColors = paletteForm.colors.map((color) => {
+      if (color === originalColor) {
+        return newColor;
+      } else {
+        return color
+      }
+    }) 
+
+    // resets 
+    this.setState({ 
+      paletteForm: {
+        colors: newColors
+      },
+      editColor: {
+        edit: false
+      }
+    }, () => {
+      localStorage.setItem('currentEdit', JSON.stringify(this.state.paletteForm.colors))
+    })
+  }
+
+  updatePalette(color) {
+    this.setState({
+      paletteForm: {
+        colors: [...this.state.paletteForm.colors, color]
       }
     })
   }
 
   render() {
-    const { showSidebar, showSubmission, exitBlock, paletteForm: { colors, paletteName }} = this.state 
+    const { showSidebar, showSubmission, exitBlock, editColor, paletteForm: { colors, paletteName }} = this.state 
 
     return (
       <div className="NewPaletteForm">
@@ -184,11 +233,11 @@ export default class NewPaletteForm extends Component {
         {/* Dialog Integration for clicking 'Save Palette' */}
         <PaletteSubmitForm
           open={showSubmission}
+          paletteName={paletteName}
           handleCloseInput={this.handleCloseInput}
           handleOnTextChange={this.handleOnTextChange}
           handleEmojiChange={this.handleEmojiChange}
           handleEmojiDialog={this.handleEmojiDialog}
-          paletteName={paletteName}
         />
 
         {/* Main Content of New Palette */}
@@ -205,8 +254,9 @@ export default class NewPaletteForm extends Component {
           <div className="NewPaletteForm__main__content">
             <DraggableColorList 
               colors={colors} 
-              fontColor={this.fontColor} 
+              editColor={editColor}
               handleDeleteColor={this.handleDeleteColor} 
+              selectColor={this.selectColor}
               axis="xy"
               distance={1}
             />
@@ -216,11 +266,15 @@ export default class NewPaletteForm extends Component {
         {/* New Palette Sidebar */}
         <NewPaletteSidebar 
           showSidebar={showSidebar}
-          handleSidebarToggle={this.handleSidebarToggle}
-          fontColor={this.fontColor}
-          clearPalette={this.clearPalette}
           paletteColors={colors}
+          editColor={editColor}
+          handleSidebarToggle={this.handleSidebarToggle}
+          clearPalette={this.clearPalette}
           updatePalette={this.updatePalette}
+          setPalette={this.setPalette}
+          updateColor={this.updateColor}
+          changeColor={this.changeColor}
+          cancelEdit={this.cancelEdit}
         />
       </div>
     )

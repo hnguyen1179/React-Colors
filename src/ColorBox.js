@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CopyToClipBoard from 'react-copy-to-clipboard';
 import { Link } from 'react-router-dom';
+
 import './ColorBox.scss';
 
 export default class ColorBox extends Component {
@@ -23,7 +24,7 @@ export default class ColorBox extends Component {
   }
 
   render() {
-    const { colorName, nameColor, format, moreUrl, singleColorPalette = false } = this.props;
+    const { nameColor, format, moreUrl, singleColorPalette = false } = this.props;
     const { copying } = this.state;
     const height = !singleColorPalette ? '25%' : '50%'
 
@@ -32,13 +33,13 @@ export default class ColorBox extends Component {
         <div className="ColorBox" style={{ background: format, height: height }}>
           <div className={`copy-overlay ${copying && 'show'}`} style={{ background: format }} />
           <div className={`copy-overlay-text ${copying && 'show'}`}>
-            <h1>Copied</h1>
-            <h4>{format}</h4>
+            <h1 style={{ color: nameColor }}>Copied</h1>
+            <h4 style={{ color: nameColor }}>{format}</h4>
           </div>
           <div className="copy-container">
-              <div className="box-content">
-                <span style={{color: nameColor}} className="name">{colorName}</span>
-              </div>
+            <div className="box-content">
+              <span style={{ color: nameColor }} className="name">{format}</span>
+            </div>
             <button className="copy">copy</button>
           </div>
           {

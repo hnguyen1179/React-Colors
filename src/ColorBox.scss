@@ -4,7 +4,6 @@
   /* display: inline-block; */
   position: relative;
   cursor: pointer;
-  text-transform: uppercase;
   margin-bottom: -3.5px;
 }
 
@@ -32,7 +31,6 @@
   border: none;
   cursor: pointer;
   opacity: 0;
-  text-transform: uppercase;
 }
 
 .copy-container:hover .copy {
@@ -48,7 +46,6 @@
   padding: 10px;
   color: black;
   letter-spacing: 1px;
-  font-size: 12px;
 }
 
 .more {

@@ -58,4 +58,41 @@ function addSingleColorRange(palette, color) {
   })}
 }
 
-export { COLOR_STEPS, addColorRange, addSingleColorRange }
+function arrayToHex(array) {
+  return array.map(rgb => {
+    const [r, g, b] = rgb;
+    return chroma(r, g, b).hex()
+  })
+}
+
+function hexToArray(array) {
+  return array.map(hex => {
+    return chroma(hex).rgb()
+  })
+}
+
+function pickFour(array) {
+  const output = new Set();
+  const maxNum = array.length;
+
+  while (output.size < 4) {
+    output.add(Math.floor(Math.random() * maxNum))
+  }
+
+  return Array.from(output).map(idx => array[idx])
+}
+
+function fontColor(color) {
+  if (!color) return
+  return chroma(color).luminance() > 0.5 ? 'black' : 'white'
+}
+
+export { 
+  COLOR_STEPS, 
+  addColorRange, 
+  addSingleColorRange, 
+  arrayToHex, 
+  hexToArray, 
+  pickFour, 
+  fontColor 
+}

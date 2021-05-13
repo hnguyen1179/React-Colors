@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+
 import { ChromePicker } from 'react-color'
 import { debounce } from 'lodash'
-import colorNames from './cssColorNames'
-import chroma from 'chroma-js'
+import { arrayToHex, hexToArray, pickFour } from './ColorUtility'
+import { fontColor } from './ColorUtility';
+
 import './NewPaletteForm.scss'
 
 export default class NewPaletteSidebar extends Component {
@@ -10,29 +12,43 @@ export default class NewPaletteSidebar extends Component {
     super(props) 
 
     this.state = {
-      colorForm: {
-        color: '#ffffff',
-      },
+      color: '#ffffff',
       colorFormErrors: {
         colorError: '',
-        colorPaletteError: ''
       }
     }
 
     this.handleOnChange = debounce(this.handleOnChange.bind(this), 2)
     this.handleAddColor = this.handleAddColor.bind(this)
-    this.handleRandomColor = this.handleRandomColor.bind(this)
+    this.handleRecommendColor = this.handleRecommendColor.bind(this)
+    this.handleGeneratePalette = debounce(this.handleGeneratePalette.bind(this), 50)
+    this.clickClearPalette = this.clickClearPalette.bind(this)
+    this.clickEditColor = this.clickEditColor.bind(this)
+  }
+
+  componentDidMount() {
+    if (!localStorage.getItem('currentEdit')) {
+      this.handleGeneratePalette();
+    }
   }
 
   // Saves into localStorage the currentEdit
   componentDidUpdate(prevProps) {
+    // This is to save the current palette in the event that the user 
+    // accidentally refreshes the page 
     if (this.props.paletteColors.length !== prevProps.paletteColors.length) {
       const stringy = JSON.stringify(this.props.paletteColors);
       localStorage.setItem('currentEdit', stringy);
     }
+
+    // This is used to keep track of the current edited color. If a user 
+    // clicks on a color, it will update editColor.edit = true 
+    // and set the editColor.index, editColor.color, editColor.newColor 
+    if (this.props.editColor.color !== prevProps.editColor.color) {
+      this.setState({ color: this.props.editColor.color })
+    }
   }
 
-  // UTILITY FUNCTIONS
   resetErrors() {
     this.setState(previous => {
       return {
@@ -49,44 +65,24 @@ export default class NewPaletteSidebar extends Component {
     this.setState(previous => {
       return {
         ...previous,
-        colorForm: {
-          color: previous.colorForm.color,
-          colorName: ''
-        }
+        color: previous.color
       }
     })
   }
 
   // Error Checker for adding colors 
-  isValid(options = { randomColor: false }) {
+  isValid() {
     const { paletteColors } = this.props;
-    const { color } = this.state.colorForm;
+    const { color } = this.state;
 
     let colorError = ''
-    let colorPaletteError = ''
     
     const fullPalette = paletteColors.length === 20
     
-    if (fullPalette) {
-      colorPaletteError = 'Palette is full'
-    }
+    const duplicateColor = paletteColors.some(colorFromPalette => {
+      return colorFromPalette === color
+    })
     
-    if (options.randomColor) {
-      if (fullPalette) {
-        this.setState({ 
-          colorFormErrors: {
-            colorPaletteError
-          }
-        })
-        
-        return false
-      }
-      
-      return true
-    }
-    
-    const duplicateColor = paletteColors.some(colorObj => colorObj.color === color)
-
     if (duplicateColor) {
       colorError = (
         <div className='color-error'>
@@ -98,8 +94,7 @@ export default class NewPaletteSidebar extends Component {
     if ([fullPalette, duplicateColor].some(x => x === true)) {
       this.setState({ 
         colorFormErrors: {
-          colorError,
-          colorPaletteError
+          colorError
         }
       })
 
@@ -111,59 +106,122 @@ export default class NewPaletteSidebar extends Component {
 
   // EVENT HANDLERS
   handleOnChange(color) {
-    this.setState({ 
-      colorForm: { ...this.state.colorForm,
-        color: color.hex
-      }
-    })
+    this.setState({ color: color.hex })
+    this.props.changeColor(color.hex)
   }
 
   handleAddColor(e) {
     e.preventDefault()
     if (!this.isValid()) return
 
-    this.props.updatePalette(this.state.colorForm)
+    this.props.updatePalette(this.state.color)
     this.resetForm()
     this.resetErrors()
   }
 
-  handleRandomColor() {
-    // // Checks if full
-    // if (!this.isValid({ randomColor: true })) return
+  handleGeneratePalette() {
+    const { setPalette } = this.props;
 
-    // // Custom check to see if current color added isn't already included
-    // const currentColors = {};
+    const url = "http://colormind.io/api/";
+    const data = {
+      model : "default",
+    }
 
-    // let colorHex = chroma(colorNames[Math.floor(Math.random() * colorNames.length)]).hex()
-    // let duplicate = this.props.paletteColors.some(colorObj => {      
-    //   currentColors[colorObj.color.toLowerCase()] = true;
-    //   return colorObj.color.toLowerCase() === colorHex.toLowerCase()
-    // })
+    const http = new XMLHttpRequest();
 
-    // while (duplicate) {
-    //   colorHex = chroma(colorNames[Math.floor(Math.random() * colorNames.length)]).hex();
-    //   if (!(colorHex in currentColors)) duplicate = false;
-    // }
+    http.onreadystatechange = function() {
+      if(http.readyState === 4 && http.status === 200) {
+        const palette = JSON.parse(http.responseText).result;
+        setPalette(arrayToHex(palette))
+      }
+    }
 
-    // const colorObject = {
-    //   colorHex
-    // }
+    http.open("POST", url, true);
+    http.send(JSON.stringify(data));
+  }
 
-    // this.props.updatePalette(colorObject)
+  handleRecommendColor() {
+    // if (!this.isValid({ random: true })) return 
+
+    const { updatePalette, paletteColors } = this.props;
+    let newPaletteColors = hexToArray(pickFour(paletteColors))
+    newPaletteColors.push('N')
+
+    const url = "http://colormind.io/api/";
+    const data = {
+      model : "default",
+      input: newPaletteColors
+    }
+
+    const http = new XMLHttpRequest();
+
+    http.onreadystatechange = function() {
+      if(http.readyState === 4 && http.status === 200) {
+        const palette = JSON.parse(http.responseText).result;
+        updatePalette(arrayToHex(palette)[palette.length - 1])
+      }
+    }
+
+    http.open("POST", url, true);
+    http.send(JSON.stringify(data));
+  }
+
+  clickClearPalette() {
+    const { clearPalette } = this.props
+    clearPalette()
+    this.setState({ color: '#ffffff' })
+  }
+
+  clickEditColor() {
+    const { updateColor, editColor } = this.props
+    const { color } = this.state 
+
+    updateColor(editColor.originalColor, color)
   }
 
   render() {
     const { 
-      colorForm: { color }, 
-      colorFormErrors: { colorError, colorPaletteError } 
+      color,
+      colorFormErrors: { colorError } 
     } = this.state;
 
     const {
       showSidebar,
       handleSidebarToggle,
-      fontColor,
-      clearPalette
+      paletteColors,
+      editColor,
+      cancelEdit
     } = this.props;
+
+    const editButtons = (
+      <div className="edit-buttons">
+        <button 
+          className="edit-color-button"
+          style={{ backgroundColor: color, color: fontColor(color) }}
+          onClick={this.clickEditColor}
+        > 
+          <h2> Edit Color </h2> 
+        </button>
+        <button 
+          className="cancel-edit-button"
+          style={{ backgroundColor: editColor.originalColor, color: fontColor(editColor.originalColor) }}
+          onClick={cancelEdit}
+        > 
+          <h2> Cancel </h2> 
+        </button>
+      </div>
+    )
+
+    const addButton = (
+      <button 
+        type="submit" 
+        className="add-color-button"
+        style={{ backgroundColor: color, color: fontColor(color) }}
+        disabled={paletteColors.length === 20}
+      > 
+        <h2> Add Color </h2> 
+      </button>
+    )
   
     return (
       <div className={`NewPaletteForm__sidebar ${showSidebar && 'show'}`}>
@@ -172,14 +230,26 @@ export default class NewPaletteSidebar extends Component {
             hide tool
           </div>
         </div>
+
         <div className="NewPaletteForm__sidebar__head">
-          <button className="clear-button" onClick={clearPalette}>
+          <button 
+            className="random-palette-button" 
+            onClick={this.handleGeneratePalette}
+          >
+            Generate Random Palette
+          </button>
+          <button 
+            className="random-color-button" 
+            onClick={this.handleRecommendColor}
+            disabled={paletteColors.length < 4 || paletteColors.length == 20}
+          >
+            Recommend a Color
+          </button>
+          <button className="clear-button" onClick={this.clickClearPalette}>
             Clear Palette 
           </button>
-          <button className="random-button" onClick={this.handleRandomColor}>
-            Random Color
-          </button>
         </div>
+
         <form onSubmit={this.handleAddColor}>
           <ChromePicker 
             disableAlpha
@@ -188,15 +258,11 @@ export default class NewPaletteSidebar extends Component {
           />
           <div className="color-input">
             <ul className="error-list">
-              <li> {colorPaletteError} </li>
               <li> {colorError} </li>              
             </ul>
           </div>
-          <button type="submit" style={{ backgroundColor: color }}> 
-            <h2 className={fontColor(color)}>
-              Add Color
-            </h2> 
-          </button>
+
+          { editColor.edit ? editButtons : addButton }
         </form>
       </div>
     )

@@ -42,11 +42,17 @@ export default class App extends Component {
 
   
   findSinglePalette(renderProps) {
+    // Problem is that you're looking for a 300 color hex in a 
+    // an array of 400 color hexes 
+
+    // color cannot be found. Previously you were searching for the color name? 
+
+    // Need to switch out the 400 color array for a 300 color array 
+
     const { palettes } = this.state;
     const paletteId = renderProps.match.params.id;
     const hexNoHash = renderProps.match.params.hexNoHash;
     const palette = palettes.find(palette => palette.id === paletteId)
-    console.log(palette)
     const color = palette.colors.find(color => {
       return color.slice(1).toLowerCase() === hexNoHash
     })
