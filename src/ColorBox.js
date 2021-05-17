@@ -26,11 +26,10 @@ export default class ColorBox extends Component {
   render() {
     const { nameColor, format, moreUrl, singleColorPalette = false } = this.props;
     const { copying } = this.state;
-    const height = !singleColorPalette ? '25%' : '50%'
 
     return (
       <CopyToClipBoard text={format} onCopy={this.handleCopy}>
-        <div className="ColorBox" style={{ background: format, height: height }}>
+        <div className="ColorBox" style={{ background: format }}>
           <div className={`copy-overlay ${copying && 'show'}`} style={{ background: format }} />
           <div className={`copy-overlay-text ${copying && 'show'}`}>
             <h1 style={{ color: nameColor }}>Copied</h1>

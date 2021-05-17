@@ -8,8 +8,8 @@
 
 .SCP__colorbox-container {
   height: 90%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
 }
 
 .SCP__colorbox-container__colorbox {

@@ -1,10 +1,17 @@
+@import './styles/style.scss';
+
 .PaletteList {
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(./styles/bg.svg);
+  background-color: $neumorphic-bg-color;
+  // background-attachment: fixed;
+  // background-size: cover;
+  // background-image: url(./styles/bg.svg);
+  // overflow-y: scroll;
+  /* background by SVGBackgrounds.com */
 }
 
 .PaletteList__container {
@@ -12,7 +19,7 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
-  width: 40%;
+  width: 50%;
 }
 
 .PaletteList__header {
@@ -34,16 +41,40 @@
 }
 
 .PaletteList__header__create {
-  background: none;
-  border: none;
+  @include neumorphic;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  border-radius: 5px;
   cursor: pointer;
-  color: white;
+  color: black;
 }
 
 .PaletteList__body {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   row-gap: 1.5rem;
   column-gap: 2rem;
+
+  a {
+    width: 100%;
+  }
 }
+
+// @media screen and (max-width: 1200px) {
+//   .PaletteList__container {
+//     width: 60%;
+//   }
+// }
+
+// @media screen and (max-width: 800px) {
+//   .PaletteList__container {
+//     width: 65%;
+//   }
+// }
+
+// @media screen and (max-width: 600px) {
+//   .PaletteList__container {
+//     width: 70%;
+//   }
+// }
