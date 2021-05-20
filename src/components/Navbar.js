@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
     Select,
     MenuItem,
@@ -8,8 +9,8 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Slider from "rc-slider";
+
 import "rc-slider/assets/index.css";
-import { Link } from "react-router-dom";
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -24,32 +25,44 @@ export default class Navbar extends Component {
         this.handleClose = this.handleClose.bind(this);
     }
 
+    // Handles changing of format
     handleFormatChange(e) {
+        // This part changes the design of the navbar
         this.setState({ format: e.target.value }, () => {
             this.setState({ snackbar: true });
         });
+
+        // This part changes the data fed into this page; new format changed
         this.props.changeFormat(e.target.value);
     }
 
+    // Closes snackbar
     handleClose() {
         this.setState({ snackbar: false });
     }
 
     render() {
         const {
-            brightness,
-            changeLevel,
-            singleColorPalette = false,
+            brightness, // Integer: denotes brightness of palette; default 400.
+            changeLevel, // Function: adjusts level of brightness w/ slider 
+            singleColorPalette = false, // Boolean: indicate whether SCP 
         } = this.props;
-        const { snackbar, format } = this.state;
+        
+        const {
+            snackbar, // Boolean: indicates whether to open snackbar compoonent 
+            format // String: format of the color (hex, rgb, rgba)
+        } = this.state;
 
         return (
             <div className="Navbar">
+                {/* Links to palette list page */}
                 <div className="Navbar__title">
                     <Link to="/">
                         <h2>React Colors</h2>
                     </Link>
                 </div>
+
+                {/* Slider to adjust the level of brightness of palette */}
                 <div className="slider-container">
                     <div className="level">{brightness}</div>
                     {!singleColorPalette && (
@@ -64,6 +77,8 @@ export default class Navbar extends Component {
                         </div>
                     )}
                 </div>
+
+                {/* Dropdown to change format to copy */}
                 <div className="select-container">
                     <FormControl className="form">
                         <Select
@@ -77,6 +92,7 @@ export default class Navbar extends Component {
                     </FormControl>
                 </div>
 
+                {/* Visual indicator that format has been changed */}
                 <Snackbar
                     anchorOrigin={{
                         vertical: "bottom",

@@ -132,12 +132,6 @@
     transition-delay: 0.2s;
 }
 
-@media screen and (max-width: map.get($breakpoints, "l")) {
-}
-
-@media screen and (max-width: map.get($breakpoints, "m")) {
-}
-
 @media screen and (max-width: map.get($breakpoints, "s")) {
     .copy-overlay {
         transition: transform 0.6s ease-in-out;

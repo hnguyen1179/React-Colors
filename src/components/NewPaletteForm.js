@@ -11,6 +11,7 @@ import DraggableColorList from "./DraggableColorList";
 export default class NewPaletteForm extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             paletteForm: {
                 paletteName: "",
@@ -40,12 +41,10 @@ export default class NewPaletteForm extends Component {
         this.handleEmojiDialog = this.handleEmojiDialog.bind(this);
         this.handleConfirmDialog = this.handleConfirmDialog.bind(this);
         this.handleBrowserBack = this.handleBrowserBack.bind(this);
-
         this.selectColor = this.selectColor.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
         this.updateColor = this.updateColor.bind(this);
         this.changeColor = this.changeColor.bind(this);
-
         this.updatePalette = this.updatePalette.bind(this);
         this.setPalette = this.setPalette.bind(this);
         this.clearPalette = this.clearPalette.bind(this);
@@ -54,6 +53,10 @@ export default class NewPaletteForm extends Component {
     componentDidMount() {
         const { palettes } = this.props;
 
+        /**
+         * Creates validation rule to check for unique palette names
+         * when saving a palette
+         **/
         ValidatorForm.addValidationRule("isPaletteNameUnique", (value) => {
             return palettes.every(
                 ({ paletteName }) =>
@@ -62,15 +65,18 @@ export default class NewPaletteForm extends Component {
         });
     }
 
-    handleCloseInput(e) {
+    // Closes the save palette pop up form
+    handleCloseInput() {
         this.setState({ showSubmission: false });
     }
 
+    // Initiates the save palette pop up form
     handleOpenInput(e) {
         e.stopPropagation();
         this.setState({ showSubmission: "pickPaletteName" });
     }
 
+    // Converts 'Material UI Colors' to 'material-ui-colors'
     convertPaletteName(name) {
         return name
             .split(" ")
@@ -78,6 +84,7 @@ export default class NewPaletteForm extends Component {
             .join("-");
     }
 
+    // Opens the sidebar and closes the color box edit menu
     handleSidebarToggle() {
         this.setState(
             {
@@ -86,6 +93,17 @@ export default class NewPaletteForm extends Component {
             () => this.cancelEdit()
         );
     }
+
+    /**
+     * Deletes colorbox and sets the color to edit to be '#fffff2' in order to
+     * allow editing of the defaulted #ffffff color. After adding a color,
+     * the color to add defaults to #ffffff
+     *
+     * however, I wrote the select color to edit function to close the edit menu
+     * should you click on the same color. Thus, a bug is created if the user
+     * tries to edit the defaulted color; edit menu automatically closes and it
+     * looks like nothing happened
+     **/
 
     handleDeleteColor(colorHex) {
         const { colors } = this.state.paletteForm;
@@ -102,6 +120,7 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    // Handles typing in save palette form pop up
     handleOnTextChange(e) {
         this.setState({
             paletteForm: {
@@ -111,7 +130,8 @@ export default class NewPaletteForm extends Component {
         });
     }
 
-    handleEmojiChange(emojiObj, e) {
+    // Handles selecting an emoji in the save palette form pop up
+    handleEmojiChange(emojiObj) {
         this.setState(
             {
                 paletteForm: {
@@ -125,19 +145,31 @@ export default class NewPaletteForm extends Component {
         );
     }
 
+    // Opens the 2nd half of the save palette form pop up; selecting an emoji
     handleEmojiDialog() {
         this.setState({ showSubmission: "pickEmoji" });
     }
 
+    // Opens the 'Leaving Confirmation' pop up
     handleConfirmDialog() {
         this.setState({ showSubmission: "pickConfirm" });
     }
 
+    /**
+     * <Prompt /> Component's message attribute allows for a function to be set
+     * and if that function returns false, then the back button is negated.
+     * This was something I figured out by reading the docs lol. Saved me a lot
+     * of time trying to hack the default of clicking the browser's back button
+     *
+     * handleConfirmDialog opens up the 'Leaving Confirmation' pop up wherein
+     * I can control whether or not to push to history
+     **/
     handleBrowserBack() {
         this.handleConfirmDialog();
         return false;
     }
 
+    // Saves the palette and returns user to the palette list page
     handleAddPalette() {
         const { paletteName, emoji, colors } = this.state.paletteForm;
 
@@ -154,6 +186,14 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    /**
+     * Clears localStorage of the current palette being edited on and also
+     * sets exitBlock off in order to allow for no confirmation for the <Prompt />
+     * component, which prevents an infinite loop
+     *
+     * After, pushes to history and takes the user back to the palette list page
+     **/
+
     handleExit() {
         localStorage.removeItem("currentEdit");
         this.setState({ exitBlock: false }, () => {
@@ -161,6 +201,7 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    // Clears the current palette list colors and closes out the edit menu
     clearPalette() {
         this.setState(
             {
@@ -176,6 +217,10 @@ export default class NewPaletteForm extends Component {
         );
     }
 
+    /**
+     * Updates the current palette of colors being worked on with a new array
+     * and then resets the currentEdit in lS with the new array
+     **/
     setPalette(array) {
         this.setState(
             {
@@ -192,11 +237,11 @@ export default class NewPaletteForm extends Component {
         );
     }
 
-    // Opens the edit button
+    /**
+     * Opens the edit menu, will close the edit menu if color box clicked on is 
+     * the same one being edited
+     **/
     selectColor(color) {
-        console.log("color: ", color);
-        console.log("og color: ", this.state.editColor.originalColor);
-
         if (color === this.state.editColor.originalColor) {
             this.cancelEdit();
             return;
@@ -211,6 +256,7 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    // Changes the color preview of the color to be edited to via color picker
     changeColor(color) {
         this.setState({
             editColor: {
@@ -220,7 +266,7 @@ export default class NewPaletteForm extends Component {
         });
     }
 
-    // Closes the edit buttons
+    // Closes and resets the edit menu 
     cancelEdit() {
         this.setState({
             editColor: {
@@ -231,13 +277,13 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    // Finalizes the edited color to the new color and saves change in lS 
     updateColor(originalColor, newColor) {
         if (originalColor === newColor) {
             this.cancelEdit();
             return;
         }
 
-        console.log("im in here");
         const { paletteForm } = this.state;
 
         const newColors = paletteForm.colors.map((color) => {
@@ -248,7 +294,6 @@ export default class NewPaletteForm extends Component {
             }
         });
 
-        // resets
         this.setState(
             {
                 paletteForm: {
@@ -265,6 +310,7 @@ export default class NewPaletteForm extends Component {
         );
     }
 
+    // Adds a color onto the palette's color array 
     updatePalette(color) {
         this.setState({
             paletteForm: {
@@ -273,6 +319,10 @@ export default class NewPaletteForm extends Component {
         });
     }
 
+    /** 
+     * Function required to allow for draggability of colorboxes, saves new 
+     * arrangement in lS
+     **/
     onSortEnd = ({ oldIndex, newIndex }) => {
         this.setState(
             (prev) => ({
@@ -296,18 +346,22 @@ export default class NewPaletteForm extends Component {
 
     render() {
         const {
-            showSidebar,
-            showSubmission,
-            exitBlock,
-            editColor,
-            paletteForm: { colors, paletteName },
+            showSidebar, // Boolean: indicates whether to open sidebar
+            showSubmission, // String: indicates which pop up prompt to open
+            exitBlock, // Boolean: indicates whether to trigger <Prompt />
+            editColor, // Object: {str: color, str: originalColor, bool: edit}
+            paletteForm: {
+                colors, // String Array: name of colors (hex, rgb, rgba)
+                paletteName // String: 'Material UI Colors'
+            },
         } = this.state;
 
         return (
             <div className="NewPaletteForm">
+                {/* Prompt to stop the user from leaving an unsaved palette */}
                 <Prompt when={exitBlock} message={this.handleBrowserBack} />
 
-                {/* Dialog Integration for clicking 'Save Palette' */}
+                {/* Pop up for clicking 'Save Palette' */}
                 <PaletteSubmitForm
                     open={showSubmission}
                     paletteName={paletteName}
@@ -321,6 +375,7 @@ export default class NewPaletteForm extends Component {
                 <main
                     className={`NewPaletteForm__main ${showSidebar && "show"}`}
                 >
+                    {/* Navbar */}
                     <NewPaletteNav
                         open={showSubmission}
                         showSidebar={showSidebar}
@@ -331,6 +386,7 @@ export default class NewPaletteForm extends Component {
                         handleConfirmDialog={this.handleConfirmDialog}
                         handleExit={this.handleExit}
                     />
+                    {/* Holds the draggable colorboxes */}
                     <div className="NewPaletteForm__main__content">
                         <DraggableColorList
                             colors={colors}

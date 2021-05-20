@@ -47,7 +47,7 @@
 
         &__create {
             @include neumorphic;
-            font-family: 'Roboto';
+            font-family: "Roboto";
             padding: 0.5rem 1rem;
             font-size: clamp(0.85rem, 0.8rem + 0.2222vw, 1rem);
             font-weight: 500;
@@ -71,26 +71,6 @@
         width: 100%;
     }
 }
-
-// @media screen and (max-width: 1200px) {
-//   .PaletteList__container {
-//     width: 60%;
-//   }
-// }
-
-// @media screen and (max-width: 900px) {
-//   .PaletteList__container {
-//     width: min(750px, 80%);
-//   }
-// }
-
-// @media screen and (max-width: 830px) {
-//   .PaletteList {
-//     &__body {
-
-//     }
-//   }
-// }
 
 @media screen and (max-width: 544px) {
     .PaletteList__body {

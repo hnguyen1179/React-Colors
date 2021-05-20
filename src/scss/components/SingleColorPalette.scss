@@ -90,9 +90,6 @@
     margin-left: 1rem;
 }
 
-@media screen and (max-width: map.get($breakpoints, "l")) {
-}
-
 @media screen and (max-width: map.get($breakpoints, "m")) {
     .SCP__colorbox-container {
         grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));

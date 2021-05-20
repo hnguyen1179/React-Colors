@@ -44,41 +44,11 @@
         top: 0;
         padding: 5px;
         background-color: rgb(54, 54, 54);
+
+        &:hover {
+            transition: 300ms ease-in-out;
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
     }
 }
-
-
-//1200+ Larger Screens
-
-//1200, Desktops
-
-//1024, Small screens / laptops
-
-//768, Tablets
-
-//829, clips to 2
-// @media screen and (max-width: 830px) {
-//     .MiniPalette {
-//         height: 150px;
-
-//         &__bottom {
-//             height: 20%;
-//         }
-//     }
-// }
-
-//540; clips to 1
-// @media screen and (max-width: map.get($breakpoints, "xs")) {
-//     .MiniPalette {
-//         min-width: 240px;
-//         width: 60%;
-//     }
-// }
-
-//480, Mobile
-
-// @media screen and (max-width: 545px) {
-//     .MiniPalette {
-//         width: 50%;
-//     }
-// }

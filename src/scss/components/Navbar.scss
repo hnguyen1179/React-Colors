@@ -104,12 +104,6 @@
     font-weight: 700;
 }
 
-@media screen and (max-width: map.get($breakpoints, "l")) {
-}
-
-@media screen and (max-width: map.get($breakpoints, "m")) {
-}
-
 @media screen and (max-width: map.get($breakpoints, "s")) {
     .Navbar {
         &__title {

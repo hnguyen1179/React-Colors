@@ -13,12 +13,16 @@ class DraggableColorBox extends Component {
         this.clickBox = this.clickBox.bind(this);
     }
 
+    // Selects the clicked colorbox to be edited
     clickBox() {
         const { selectColor, color, showSidebar } = this.props;
+
+        // Will not be selected if 'sidebar' component isn't active
         if (!showSidebar) return;
         selectColor(color);
     }
 
+    // Deletes the selected color
     clickDelete(e) {
         const { handleDeleteColor, color } = this.props;
         e.stopPropagation();
@@ -26,8 +30,9 @@ class DraggableColorBox extends Component {
     }
 
     render() {
-        const { color, editColor, showSidebar } = this.props;
+        const { color, editColor } = this.props;
 
+        // Previews the color to be edited to
         const renderEdit = (
             <>
                 <div
@@ -38,6 +43,15 @@ class DraggableColorBox extends Component {
                 />
             </>
         );
+
+        /**
+         * Boolean that triggers when
+         *  1. When editColor.edit is true
+         *  2. When the color in the current colorbox is the current color being edited
+         *
+         * Every colorbox runs this check, but the preview (renderEdit)
+         * will only show if the edited (selected) color === colorbox color
+         *  */
 
         const editMode = editColor.edit && editColor.originalColor === color;
 
@@ -50,6 +64,7 @@ class DraggableColorBox extends Component {
                     className="draggable-colorbox"
                     style={{ backgroundColor: color }}
                 >
+                    {/* Colorbox content; name and delete button */}
                     <div
                         className={`draggable-colorbox__content ${
                             editMode && "edit"
@@ -64,15 +79,18 @@ class DraggableColorBox extends Component {
                         </IconButton>
                     </div>
 
+                    {/* Rendering the edit color preview */}
                     {editMode && renderEdit}
 
+                    {/* Border that visually tells which color is being edited */}
                     <div
                         className="draggable-colorbox--border"
                         style={{
                             transition: "border-width 150ms ease-in-out",
                             border: `${
                                 editMode
-                                    ? "max(3px, 0.4vw) solid " + fontColor(color)
+                                    ? "max(3px, 0.4vw) solid " +
+                                      fontColor(color)
                                     : "0px solid " + fontColor(color)
                             }`,
                         }}

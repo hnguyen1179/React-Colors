@@ -4,11 +4,11 @@ import { SortableContainer } from "react-sortable-hoc";
 import DraggableColorBox from "./DraggableColorBox";
 
 function DraggableColorList({
-    colors,
-    editColor,
-    showSidebar,
-    handleDeleteColor,
-    selectColor,
+    colors, // String Array of colors in palette 
+    editColor, // String of color being edited, in hex (color id)
+    showSidebar, // Boolean to display sidebar
+    handleDeleteColor, // Function to delete color 
+    selectColor, // Function to select color to edit 
 }) {
     return (
         <div className="NewPaletteForm__main__content__colorbox-container">

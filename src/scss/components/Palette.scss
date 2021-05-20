@@ -33,9 +33,6 @@
     margin: 0 1rem;
 }
 
-@media screen and (max-width: map.get($breakpoints, "l")) {
-}
-
 @media screen and (max-width: map.get($breakpoints, "m")) {
     .Palette-colors {
         grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));

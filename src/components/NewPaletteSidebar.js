@@ -1,8 +1,13 @@
 import React, { Component } from "react";
-
 import { ChromePicker } from "react-color";
 import { debounce, throttle } from "lodash";
-import { arrayToHex, fontColor, hexToArray, pickFour } from "../utility/ColorUtility";
+
+import {
+    arrayToHex,
+    fontColor,
+    hexToArray,
+    pickFour,
+} from "../utility/ColorUtility";
 
 export default class NewPaletteSidebar extends Component {
     constructor(props) {
@@ -31,6 +36,7 @@ export default class NewPaletteSidebar extends Component {
     }
 
     componentDidMount() {
+        // Generates a random palette if currentEdit isn't present in lS
         if (!localStorage.getItem("currentEdit")) {
             this.handleGeneratePalette();
         }
@@ -55,6 +61,7 @@ export default class NewPaletteSidebar extends Component {
         }
     }
 
+    // Resets all of the errors to blank
     resetErrors() {
         this.setState((previous) => {
             return {
@@ -66,6 +73,7 @@ export default class NewPaletteSidebar extends Component {
         });
     }
 
+    // Resets the form to default; used after adding colors
     resetForm() {
         this.setState((previous) => {
             return {
@@ -122,21 +130,26 @@ export default class NewPaletteSidebar extends Component {
         return true;
     }
 
-    // EVENT HANDLERS
+    /**
+     * Ran when color picker picks a new color, changes the color to edit to color
+     * which requires changing the editColor object's color 
+     * */
+
     handleOnChange(color) {
         this.setState({ color: color.hex });
         this.props.changeColor(color.hex);
     }
 
+    // Updates the palette with a new color 
     handleAddColor(e) {
         e.preventDefault();
-        console.log("handling add color");
         if (!this.isValid()) return;
 
         this.props.updatePalette(this.state.color);
         this.resetForm();
     }
 
+    // Hits the colormind API to generate a random 5-color palette 
     handleGeneratePalette() {
         const { setPalette, cancelEdit } = this.props;
 
@@ -160,6 +173,7 @@ export default class NewPaletteSidebar extends Component {
         http.send(JSON.stringify(data));
     }
 
+    // Hits the colormind API to generate a recommended color based on current palette 
     handleRecommendColor() {
         const { updatePalette, paletteColors } = this.props;
         if (paletteColors.length === 20) return;
@@ -185,12 +199,14 @@ export default class NewPaletteSidebar extends Component {
         http.send(JSON.stringify(data));
     }
 
+    // Clears the palette of all colors
     clickClearPalette() {
         const { clearPalette } = this.props;
         clearPalette();
         this.setState({ color: "#000000" });
     }
 
+    // Finalizes the editing a color, changing it within the palette 
     clickEditColor(e) {
         e.preventDefault();
         const { updateColor, editColor } = this.props;
@@ -199,6 +215,7 @@ export default class NewPaletteSidebar extends Component {
         updateColor(editColor.originalColor, color);
     }
 
+    // Cancels the edit and reverts the color to original color 
     clickCancelEdit(e) {
         e.preventDefault();
 
@@ -208,25 +225,29 @@ export default class NewPaletteSidebar extends Component {
 
     render() {
         const {
-            color,
-            colorFormErrors: { colorError },
+            color, // String: hex of current color selected by color picker 
+            colorFormErrors: { colorError }, // String: Error Message for duplicates
         } = this.state;
 
-        const { showSidebar, handleSidebarToggle, paletteColors, editColor } =
-            this.props;
+        const {
+            showSidebar, // Boolean: condition to show sidebar
+            handleSidebarToggle, // Function: opens the sidebar, changing showSidebar in parent
+            paletteColors, // String Array: palette's colors (hex, rgb, rgba)
+            editColor // Object: {str: color, str: originalColor, bool: edit}
+        } = this.props;
 
         const editButtons = (
+            // Edit Color menu; has two buttons: confirming the change or canceling it 
             <div className="edit-buttons">
                 <button
                     className="edit-color-button"
                     onClick={this.clickEditColor}
                 >
-                    <div
-
-                    >
+                    <div>
                         <h2> Edit Color </h2>
                     </div>
                 </button>
+
                 <button
                     className="cancel-edit-button"
                     onClick={this.clickCancelEdit}
@@ -239,6 +260,7 @@ export default class NewPaletteSidebar extends Component {
         );
 
         const addButton = (
+            // Add color button 
             <button
                 type="submit"
                 className="add-color-button"
@@ -258,10 +280,12 @@ export default class NewPaletteSidebar extends Component {
 
         return (
             <div className={`NewPaletteForm__sidebar ${showSidebar && "show"}`}>
+                {/* Button which toggles hiding of sidebar */}
                 <div className="NewPaletteForm__sidebar__nav">
                     <div onClick={handleSidebarToggle}>hide tool</div>
                 </div>
 
+                {/* 3 Buttons: generate random palette, recommend color, and clear palette */}
                 <div className="NewPaletteForm__sidebar__head">
                     <button
                         className="random-palette-button"
@@ -287,6 +311,7 @@ export default class NewPaletteSidebar extends Component {
                     </button>
                 </div>
 
+                {/* Form that adds color on submission */}
                 <form onSubmit={this.handleAddColor}>
                     <ChromePicker
                         disableAlpha
@@ -299,6 +324,7 @@ export default class NewPaletteSidebar extends Component {
                         </ul>
                     </div>
 
+                    {/* If edit, show edit menu options */}
                     {editColor.edit ? editButtons : addButton}
                 </form>
             </div>
