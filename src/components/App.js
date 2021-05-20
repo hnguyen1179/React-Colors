@@ -41,7 +41,7 @@ export default class App extends Component {
         const { palettes } = this.state;
 
         let palette = palettes.find((palette) => palette.id === paletteId);
-        if (palette === undefined) return <Redirect to="/react-colors" />;
+        if (palette === undefined) return <Redirect to="/React-Colors" />;
 
         return <Palette palette={addColorRange(palette)} />;
     }
@@ -88,7 +88,7 @@ export default class App extends Component {
                     {/* Route for palette creation */}
                     <Route
                         exact
-                        path="/react-colors/palette/new"
+                        path="/React-Colors/palette/new"
                         render={(routeProps) => {
                             return (
                                 <NewPaletteForm
@@ -103,21 +103,21 @@ export default class App extends Component {
                     {/* Route for a Palette */}
                     <Route
                         exact
-                        path="/react-colors/palette/:id"
+                        path="/React-Colors/palette/:id"
                         render={this.findPalette}
                     />
 
                     {/* Route for Single Color Palette */}
                     <Route
                         exact
-                        path="/react-colors/palette/:id/:hexNoHash"
+                        path="/React-Colors/palette/:id/:hexNoHash"
                         render={this.findSinglePalette}
                     />
 
                     {/* Default Route is the index for all palettes */}
                     <Route
                         exact
-                        path="/react-colors"
+                        path="/React-Colors"
                         render={() => {
                             return (
                                 <PaletteList

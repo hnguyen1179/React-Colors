@@ -57,7 +57,7 @@ export default class Navbar extends Component {
             <div className="Navbar">
                 {/* Links to palette list page */}
                 <div className="Navbar__title">
-                    <Link to="/react-colors">
+                    <Link to="/React-Colors">
                         <h2>React Colors</h2>
                     </Link>
                 </div>
