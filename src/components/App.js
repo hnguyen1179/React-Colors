@@ -117,7 +117,7 @@ export default class App extends Component {
                     {/* Default Route is the index for all palettes */}
                     <Route
                         exact
-                        path="/"
+                        path="/React-Colors"
                         render={() => {
                             return (
                                 <PaletteList
