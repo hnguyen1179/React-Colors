@@ -182,7 +182,7 @@ export default class NewPaletteForm extends Component {
 
         this.setState({ exitBlock: false }, () => {
             this.props.savePalette(newPalette);
-            this.props.history.push("/");
+            this.props.history.push("/react-colors");
         });
     }
 
@@ -197,7 +197,7 @@ export default class NewPaletteForm extends Component {
     handleExit() {
         localStorage.removeItem("currentEdit");
         this.setState({ exitBlock: false }, () => {
-            this.props.history.push("/");
+            this.props.history.push("/react-colors");
         });
     }
 

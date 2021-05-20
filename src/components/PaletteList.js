@@ -14,7 +14,7 @@ export default class PaletteList extends Component {
             return (
                 <Link
                     key={palette.id}
-                    to={`/palette/${palette.id}`}
+                    to={`/react-colors/palette/${palette.id}`}
                     className=""
                 >
                     <MiniPalette
@@ -34,7 +34,7 @@ export default class PaletteList extends Component {
                             React Colors
                         </h1>
                         <Link
-                            to="/palette/new"
+                            to="/react-colors/palette/new"
                             className="PaletteList__nav__content__create"
                         >
                             <div>Create Palette</div>

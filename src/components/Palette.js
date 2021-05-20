@@ -47,7 +47,7 @@ export default class Palette extends Component {
                         key={i}
                         format={colorObj[format]}
                         nameColor={colorObj.nameColor}
-                        moreUrl={`/palette/${palette.id}/${color400Hex}`}
+                        moreUrl={`/react-colors/palette/${palette.id}/${color400Hex}`}
                     />
                 );
             }
