@@ -88,7 +88,7 @@ export default class App extends Component {
                     {/* Route for palette creation */}
                     <Route
                         exact
-                        path="/palette/new"
+                        path="react-colors/palette/new"
                         render={(routeProps) => {
                             return (
                                 <NewPaletteForm
@@ -103,21 +103,21 @@ export default class App extends Component {
                     {/* Route for a Palette */}
                     <Route
                         exact
-                        path="/palette/:id"
+                        path="react-colors/palette/:id"
                         render={this.findPalette}
                     />
 
                     {/* Route for Single Color Palette */}
                     <Route
                         exact
-                        path="/palette/:id/:hexNoHash"
+                        path="react-colors/palette/:id/:hexNoHash"
                         render={this.findSinglePalette}
                     />
 
                     {/* Default Route is the index for all palettes */}
                     <Route
                         exact
-                        path="/React-Colors"
+                        path="/react-colors"
                         render={() => {
                             return (
                                 <PaletteList
