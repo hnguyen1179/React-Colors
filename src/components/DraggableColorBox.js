@@ -3,7 +3,7 @@ import { SortableElement } from "react-sortable-hoc";
 
 import { IconButton } from "@material-ui/core";
 import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
-import { fontColor } from "./ColorUtility";
+import { fontColor } from "../utility/ColorUtility";
 
 class DraggableColorBox extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class DraggableColorBox extends Component {
     }
 
     render() {
-        const { color, editColor } = this.props;
+        const { color, editColor, showSidebar } = this.props;
 
         const renderEdit = (
             <>
@@ -72,7 +72,7 @@ class DraggableColorBox extends Component {
                             transition: "border-width 150ms ease-in-out",
                             border: `${
                                 editMode
-                                    ? "5px solid " + fontColor(color)
+                                    ? "max(3px, 0.4vw) solid " + fontColor(color)
                                     : "0px solid " + fontColor(color)
                             }`,
                         }}

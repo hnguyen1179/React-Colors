@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import ColorBox from "./ColorBox";
 import Navbar from "./Navbar";
-import "./SingleColorPalette.scss";
 
 export default class SingleColorPalette extends Component {
     constructor(props) {

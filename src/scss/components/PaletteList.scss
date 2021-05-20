@@ -1,0 +1,116 @@
+@use "sass:map";
+
+.PaletteList {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $neumorphic-bg-color;
+    overflow-y: scroll;
+}
+
+.PaletteList__container {
+    height: 100%;
+    width: min(750px, 80%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.PaletteList__nav {
+    display: flex;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    background-color: $neumorphic-bg-color;
+    color: white;
+    width: 100%;
+    height: min(90px, 20vw);
+    box-shadow: 0px 5px 20px rgba(145, 145, 145, 0.459);
+    top: 0;
+    z-index: 1000;
+
+    &__content {
+        height: 100%;
+        width: min(750px, 80%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &__title {
+            color: $title-text-color;
+            font-family: "Roboto";
+            line-height: 0.95;
+            font-size: clamp(1.5rem, 1.3333rem + 0.7407vw, 2rem);
+        }
+
+        &__create {
+            @include neumorphic;
+            font-family: 'Roboto';
+            padding: 0.5rem 1rem;
+            font-size: clamp(0.85rem, 0.8rem + 0.2222vw, 1rem);
+            font-weight: 500;
+            cursor: pointer;
+            color: $title-text-color;
+            text-align: center;
+        }
+    }
+}
+
+.PaletteList__body {
+    margin-top: min(120px, 25vw);
+    width: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    row-gap: 1.5rem;
+    column-gap: 1.5rem;
+
+    > a {
+        width: 100%;
+    }
+}
+
+// @media screen and (max-width: 1200px) {
+//   .PaletteList__container {
+//     width: 60%;
+//   }
+// }
+
+// @media screen and (max-width: 900px) {
+//   .PaletteList__container {
+//     width: min(750px, 80%);
+//   }
+// }
+
+// @media screen and (max-width: 830px) {
+//   .PaletteList {
+//     &__body {
+
+//     }
+//   }
+// }
+
+@media screen and (max-width: 544px) {
+    .PaletteList__body {
+        > a {
+            width: min(275px, 95%);
+        }
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "xs")) {
+    .PaletteList__nav {
+        &__content {
+            &__title {
+                width: 30%;
+            }
+
+            &__create {
+                // width: 25%;
+                letter-spacing: 0;
+            }
+        }
+    }
+}

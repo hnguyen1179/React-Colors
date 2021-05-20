@@ -1,0 +1,129 @@
+@use "sass:map";
+
+.Navbar {
+    width: 100%;
+    height: 6vh;
+    background-color: $neumorphic-bg-color;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    &__title {
+        display: flex;
+        height: 100%;
+        width: 15%;
+        align-items: center;
+        margin-left: 2%;
+        margin-right: auto;
+
+        a {
+            width: 100%;
+
+            h2 {
+                font-family: "Roboto";
+                line-height: 0.95;
+                width: 100%;
+                color: black;
+                font-size: clamp(1rem, 0.6667rem + 1.5741vw, 2rem);
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+.slider-container {
+    width: 50%;
+    display: flex;
+    margin-right: 1rem;
+}
+
+.level {
+    font-size: clamp(0.87rem, 0.8267rem + 0.1926vw, 1rem);
+    position: relative;
+    top: 2px;
+    width: 25px;
+    height: 20px;
+    margin-right: 1.75rem;
+}
+
+.slider {
+    width: 100%;
+
+    .rc-slider {
+        // height: 40px;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+
+        .rc-slider-rail {
+            box-shadow: inset 3px 3px 7px #d1cdc7, inset -3px -3px 7px #ffffff;
+            height: 26px;
+            width: calc(100% + 25px);
+            background-color: $neumorphic-bg-color;
+            border-radius: 15px;
+        }
+        .rc-slider-track {
+            background-color: transparent;
+        }
+
+        .rc-slider-handle,
+        .rc-slider-handle:hover,
+        .rc-slider-handle:focus,
+        .rc-slider-handle:active {
+            margin: 0;
+            top: 4px;
+            background-color: rgb(0, 0, 0);
+            outline: none;
+            border: 0;
+            box-shadow: none;
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+.select-container {
+    width: min(17%, 100px);
+    margin-left: auto;
+    margin-right: 2%;
+
+    .MuiFormControl-root {
+        width: 100%;
+
+        > div {
+            font-size: clamp(0.8rem, 0.7333rem + 0.2963vw, 1rem);
+        }
+    }
+}
+
+.form {
+    width: 260px;
+}
+
+.snackbar-msg {
+    font-weight: 700;
+}
+
+@media screen and (max-width: map.get($breakpoints, "l")) {
+}
+
+@media screen and (max-width: map.get($breakpoints, "m")) {
+}
+
+@media screen and (max-width: map.get($breakpoints, "s")) {
+    .Navbar {
+        &__title {
+            a {
+                h2 {
+                    width: 50%;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "xs")) {
+    .level {
+        margin-right: 1.25rem;
+    }
+}

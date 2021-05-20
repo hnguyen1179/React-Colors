@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+
+import App from './components/App';
+import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <BrowserRouter>

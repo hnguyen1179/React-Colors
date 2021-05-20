@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+
 import MiniPalette from "./MiniPalette";
-import "./PaletteList.scss";
 
 export default class PaletteList extends Component {
+
     render() {
         const { palettes, deletePalette } = this.props;
 
@@ -14,37 +15,27 @@ export default class PaletteList extends Component {
                     to={`/palette/${palette.id}`}
                     className=""
                 >
-                    <MiniPalette palette={palette} />
-                    <button
-                        style={{ color: "white" }}
-                        onClick={() => deletePalette(palette.id)}
-                    >
-                        delet this
-                    </button>
+                    <MiniPalette palette={palette} deletePalette={deletePalette}/>
                 </Link>
             );
         });
 
         return (
             <div className="PaletteList">
-                <div className="PaletteList__container">
-                    <div className="PaletteList__header">
-                        <h1 className="PaletteList__header__title">
-                            react colors
+                <nav className="PaletteList__nav">
+                    <div className="PaletteList__nav__content">
+                        <h1 className="PaletteList__nav__content__title">
+                            React Colors
                         </h1>
-                        <button
-                            style={{ color: "white" }}
-                            onClick={() => localStorage.clear()}
-                        >
-                            refresh
-                        </button>
                         <Link
                             to="/palette/new"
-                            className="PaletteList__header__create"
+                            className="PaletteList__nav__content__create"
                         >
-                            <h3>Create Palette</h3>
+                            <div>Create Palette</div>
                         </Link>
                     </div>
+                </nav>
+                <div className="PaletteList__container">
                     <div className="PaletteList__body">{renderLinks}</div>
                 </div>
             </div>

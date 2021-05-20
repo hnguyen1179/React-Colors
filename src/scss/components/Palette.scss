@@ -1,0 +1,55 @@
+@use "sass:map";
+
+.Palette {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.Palette-colors {
+    height: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+}
+
+.Palette-footer {
+    height: 5vh;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-weight: bold;
+    background-color: $neumorphic-bg-color;
+}
+
+.footer-text {
+    display: flex;
+    align-items: center;
+}
+
+.emoji {
+    font-size: 1.5rem;
+    margin: 0 1rem;
+}
+
+@media screen and (max-width: map.get($breakpoints, "l")) {
+}
+
+@media screen and (max-width: map.get($breakpoints, "m")) {
+    .Palette-colors {
+        grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "s")) {
+    .Palette-colors {
+        grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "xs")) {
+    .Palette-colors {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+    }
+}

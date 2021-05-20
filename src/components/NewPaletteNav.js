@@ -7,8 +7,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-import './styles/style.scss';
-
 export default class NewPaletteNav extends Component {
     render() {
         const {
@@ -43,7 +41,7 @@ export default class NewPaletteNav extends Component {
                             onClick={handleOpenInput}
                             disabled={isEmpty}
                         >
-                            <h3>Save Palette</h3>
+                            <div>Save Palette</div>
                         </button>
                     </div>
                 </div>

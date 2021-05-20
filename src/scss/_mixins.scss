@@ -8,22 +8,22 @@
 @mixin neumorphic {
     background-color: $neumorphic-bg-color;
     box-shadow: 6px 6px 10px #d1cdc7, -6px -6px 10px #ffffff;
-    transition: 200ms;
+    color: black;
+    transition: box-shadow 200ms ease-in-out;
+    border-radius: 15px;
 
     &:hover:not([disabled]) {
         box-shadow: 2px 2px 5px #d1cdc7, -2px -2px 5px #ffffff;
         div,
-        h2,
         h3 {
-            transform: translateY(1px);
+            color: rgb(112, 112, 112);
         }
     }
 
     &:active:not([disabled]) {
         div,
-        h2,
         h3 {
-            transform: translateY(3px);
+            color: black;
         }
 
         box-shadow: inset 3px 3px 7px #d1cdc7, inset -3px -3px 7px #ffffff;
@@ -31,5 +31,5 @@
 }
 
 @mixin neumorphic-text-active {
-    transform: translateY(3px);
+    // transform: translateY(3px);
 }

@@ -1,0 +1,123 @@
+@use "sass:map";
+
+.SCP {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.SCP__colorbox-container {
+    height: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+
+    .copy-overlay,
+    .copy-overlay-text {
+        pointer-events: none;
+    }
+
+    .copy-overlay {
+        opacity: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        transform: scale(0.3);
+        transition: transform 0.8s ease-out;
+    }
+
+    .copy-overlay.show {
+        position: absolute;
+        opacity: 1;
+        transform: scale(30);
+        z-index: 5;
+    }
+
+    .copy-overlay-text {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transform: scale(0.1);
+        opacity: 0;
+        color: white;
+        z-index: -1;
+    }
+
+    .copy-overlay-text h1 {
+        font-size: 4rem;
+    }
+
+    .copy-overlay-text.show {
+        transform: scale(1);
+        opacity: 1;
+        z-index: 5;
+        transition: 250ms ease-in-out;
+        transition-delay: 0.2s;
+    }
+}
+
+.SCP__colorbox-container__colorbox {
+    width: 20%;
+    height: 50%;
+    cursor: pointer;
+}
+
+.SCP__footer {
+    height: 5vh;
+    background: white;
+}
+
+.SCP__footer {
+    height: 5vh;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-weight: bold;
+    background-color: white;
+}
+
+.SCP__footer__back {
+    cursor: pointer;
+    margin-right: auto;
+    margin-left: 1rem;
+}
+
+@media screen and (max-width: map.get($breakpoints, "l")) {
+}
+
+@media screen and (max-width: map.get($breakpoints, "m")) {
+    .SCP__colorbox-container {
+        grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "s")) {
+    .SCP__colorbox-container {
+        grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
+
+        .ColorBox {
+            .copy-overlay {
+                transition: transform 0.6s ease-in-out;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: map.get($breakpoints, "xs")) {
+    .SCP__colorbox-container {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+        .ColorBox {
+            .copy-overlay {
+                transition: transform 0.4s ease-in-out;
+            }
+        }
+    }
+}

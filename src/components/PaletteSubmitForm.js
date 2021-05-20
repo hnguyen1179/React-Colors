@@ -8,7 +8,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Picker } from 'emoji-mart'
 
-import './PaletteSubmitForm.scss';
 import 'emoji-mart/css/emoji-mart.css'
 
 

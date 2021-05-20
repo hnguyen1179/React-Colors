@@ -2,9 +2,7 @@ import React, { Component } from "react";
 
 import { ChromePicker } from "react-color";
 import { debounce, throttle } from "lodash";
-import { arrayToHex, fontColor, hexToArray, pickFour } from "./ColorUtility";
-
-import "./NewPaletteForm.scss";
+import { arrayToHex, fontColor, hexToArray, pickFour } from "../utility/ColorUtility";
 
 export default class NewPaletteSidebar extends Component {
     constructor(props) {

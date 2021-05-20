@@ -1,16 +1,12 @@
 import React, { Component } from "react";
-import NewPaletteSidebar from "./NewPaletteSidebar";
-import NewPaletteNav from "./NewPaletteNav";
-import PaletteSubmitForm from "./PaletteSubmitForm";
-import DraggableColorList from "./DraggableColorList";
-
 import { Prompt } from "react-router-dom";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import { arrayMove } from "react-sortable-hoc";
 
-import "./NewPaletteForm.scss";
-
-const seed = [];
+import NewPaletteSidebar from "./NewPaletteSidebar";
+import NewPaletteNav from "./NewPaletteNav";
+import PaletteSubmitForm from "./PaletteSubmitForm";
+import DraggableColorList from "./DraggableColorList";
 
 export default class NewPaletteForm extends Component {
     constructor(props) {
@@ -20,7 +16,7 @@ export default class NewPaletteForm extends Component {
                 paletteName: "",
                 id: "",
                 emoji: "",
-                colors: JSON.parse(localStorage.getItem("currentEdit")) || seed,
+                colors: JSON.parse(localStorage.getItem("currentEdit")) || [],
             },
             paletteNameError: "",
             showSidebar: true,
@@ -198,8 +194,8 @@ export default class NewPaletteForm extends Component {
 
     // Opens the edit button
     selectColor(color) {
-        console.log('color: ', color)
-        console.log('og color: ', this.state.editColor.originalColor)
+        console.log("color: ", color);
+        console.log("og color: ", this.state.editColor.originalColor);
 
         if (color === this.state.editColor.originalColor) {
             this.cancelEdit();

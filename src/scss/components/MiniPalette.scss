@@ -1,0 +1,84 @@
+@use "sass:map";
+
+.MiniPalette {
+    position: relative;
+    height: 175px;
+    width: max(100%, 200px);
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    background: rgb(255, 255, 255);
+
+    &__colorboxes {
+        height: 75%;
+        margin: 0.5rem;
+        margin-bottom: 0rem;
+        border-radius: 5px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+        background: rgba(0, 0, 0, 0.075);
+
+        &__colorbox {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &__bottom {
+        height: 25%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.5rem;
+
+        > h1 {
+            font-size: 0.9rem;
+            display: inline;
+        }
+    }
+
+    &__delete {
+        color: white;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 5px;
+        background-color: rgb(54, 54, 54);
+    }
+}
+
+
+//1200+ Larger Screens
+
+//1200, Desktops
+
+//1024, Small screens / laptops
+
+//768, Tablets
+
+//829, clips to 2
+// @media screen and (max-width: 830px) {
+//     .MiniPalette {
+//         height: 150px;
+
+//         &__bottom {
+//             height: 20%;
+//         }
+//     }
+// }
+
+//540; clips to 1
+// @media screen and (max-width: map.get($breakpoints, "xs")) {
+//     .MiniPalette {
+//         min-width: 240px;
+//         width: 60%;
+//     }
+// }
+
+//480, Mobile
+
+// @media screen and (max-width: 545px) {
+//     .MiniPalette {
+//         width: 50%;
+//     }
+// }
