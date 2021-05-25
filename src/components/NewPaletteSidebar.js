@@ -132,7 +132,7 @@ export default class NewPaletteSidebar extends Component {
 
     /**
      * Ran when color picker picks a new color, changes the color to edit to color
-     * which requires changing the editColor object's color 
+     * which requires changing the editColor object's color
      * */
 
     handleOnChange(color) {
@@ -140,7 +140,7 @@ export default class NewPaletteSidebar extends Component {
         this.props.changeColor(color.hex);
     }
 
-    // Updates the palette with a new color 
+    // Updates the palette with a new color
     handleAddColor(e) {
         e.preventDefault();
         if (!this.isValid()) return;
@@ -149,54 +149,68 @@ export default class NewPaletteSidebar extends Component {
         this.resetForm();
     }
 
-    // Hits the colormind API to generate a random 5-color palette 
+    /**
+     *
+     * Both of the API calls below will need to go through a cors proxy
+     * in order to run, due to colormind only being hosted via http and so
+     * a mixed-content error comes up
+     *
+     * */
+
+    // https://guarded-plateau-27863.herokuapp.com/ | https://git.heroku.com/guarded-plateau-27863.git
+    // Hits the colormind API to generate a random 5-color palette
     handleGeneratePalette() {
         const { setPalette, cancelEdit } = this.props;
 
-        const url = "http://colormind.io/api/";
+        const url =
+            "https://guarded-plateau-27863.herokuapp.com/http://colormind.io/api/";
         const data = {
             model: "default",
         };
 
-        const http = new XMLHttpRequest();
-
-        http.onreadystatechange = () => {
-            if (http.readyState === 4 && http.status === 200) {
-                const palette = JSON.parse(http.responseText).result;
-                setPalette(arrayToHex(palette));
+        fetch(url, {
+            method: "POST",
+            credentials: "omit",
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setPalette(arrayToHex(data.result));
                 this.setState({ color: "#000000" });
                 cancelEdit();
-            }
-        };
-
-        http.open("POST", url, true);
-        http.send(JSON.stringify(data));
+            })
+            .catch((error) => {
+                // console.log(error);
+            });
     }
 
-    // Hits the colormind API to generate a recommended color based on current palette 
+    // Hits the colormind API to generate a recommended color based on current palette
     handleRecommendColor() {
         const { updatePalette, paletteColors } = this.props;
+
         if (paletteColors.length === 20) return;
         const newPaletteColors = hexToArray(pickFour(paletteColors));
         newPaletteColors.push("N");
 
-        const url = "http://colormind.io/api/";
+        const url =
+            "https://guarded-plateau-27863.herokuapp.com/http://colormind.io/api/";
         const data = {
             model: "default",
             input: newPaletteColors,
         };
 
-        const http = new XMLHttpRequest();
-
-        http.onreadystatechange = function () {
-            if (http.readyState === 4 && http.status === 200) {
-                const palette = JSON.parse(http.responseText).result;
-                updatePalette(arrayToHex(palette)[palette.length - 1]);
-            }
-        };
-
-        http.open("POST", url, true);
-        http.send(JSON.stringify(data));
+        fetch(url, {
+            method: "POST",
+            credentials: "omit",
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                updatePalette(arrayToHex(data.result)[data.result.length - 1]);
+            })
+            .catch((error) => {
+                // console.log(error);
+            });
     }
 
     // Clears the palette of all colors
@@ -206,7 +220,7 @@ export default class NewPaletteSidebar extends Component {
         this.setState({ color: "#000000" });
     }
 
-    // Finalizes the editing a color, changing it within the palette 
+    // Finalizes the editing a color, changing it within the palette
     clickEditColor(e) {
         e.preventDefault();
         const { updateColor, editColor } = this.props;
@@ -215,7 +229,7 @@ export default class NewPaletteSidebar extends Component {
         updateColor(editColor.originalColor, color);
     }
 
-    // Cancels the edit and reverts the color to original color 
+    // Cancels the edit and reverts the color to original color
     clickCancelEdit(e) {
         e.preventDefault();
 
@@ -225,7 +239,7 @@ export default class NewPaletteSidebar extends Component {
 
     render() {
         const {
-            color, // String: hex of current color selected by color picker 
+            color, // String: hex of current color selected by color picker
             colorFormErrors: { colorError }, // String: Error Message for duplicates
         } = this.state;
 
@@ -233,11 +247,11 @@ export default class NewPaletteSidebar extends Component {
             showSidebar, // Boolean: condition to show sidebar
             handleSidebarToggle, // Function: opens the sidebar, changing showSidebar in parent
             paletteColors, // String Array: palette's colors (hex, rgb, rgba)
-            editColor // Object: {str: color, str: originalColor, bool: edit}
+            editColor, // Object: {str: color, str: originalColor, bool: edit}
         } = this.props;
 
         const editButtons = (
-            // Edit Color menu; has two buttons: confirming the change or canceling it 
+            // Edit Color menu; has two buttons: confirming the change or canceling it
             <div className="edit-buttons">
                 <button
                     className="edit-color-button"
@@ -260,7 +274,7 @@ export default class NewPaletteSidebar extends Component {
         );
 
         const addButton = (
-            // Add color button 
+            // Add color button
             <button
                 type="submit"
                 className="add-color-button"

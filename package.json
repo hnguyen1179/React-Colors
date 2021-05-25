@@ -1,6 +1,6 @@
 {
-  "name": "React-Colors",
-  "homepage": "http://hnguyen1179.github.io/React-Colors/",
+  "name": "react-colors",
+  "homepage": "https://hnguyen1179.github.io/React-Colors/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,6 +10,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "chroma-js": "^2.1.1",
+    "cors-bypass": "^1.3.7",
     "emoji-mart": "^3.0.1",
     "lodash": "^4.17.21",
     "rc-slider": "^9.7.1",
