@@ -18,26 +18,23 @@ In addition to helping manage color palettes, React Colors also helps you create
 ## Technologies
 
 **Front end** <br/> 
-React Colors is built entirely on React. Most of the CSS was custom and built with SCSS, with the exception of some dialog boxes/forms done with the Material UI library. Saved palettes persist through ```window.localStorage```.
+React Colors is built entirely on React and routing was done through React Router library. Most of the CSS was custom and built with SCSS, with the exception of some dialog boxes/forms generated with the Material UI library. Saved palettes were persisted through ```window.localStorage```.
 
 # Highlights
 * **Flexible Palette Creation** - persistent storage of colors within palettes is done via a CRUD system, as users are able to freely generate, edit and delete colors through the application's UI. Once colors are added to the palette, users are able to drag around colors in order to create their own ordered palettes. 
 
 * **Machine Learning Generated Colors** - through the use of the colormind API, users can take advantage of its machine learning model in order to generate a unique, five-swatch color scheme as a base for their palettes. In addition, users can also get recommended colors based on their current color palette.
-
 ![crud](https://user-images.githubusercontent.com/19617238/119578123-ce4be800-bd70-11eb-84e6-1cc450f359f2.gif)
 </br>
 </br>
 
 
 * **Persistent Palettes** - this project features no back end and so any persistent data is saved via ```window.localStorage```. Once a user creates a palette by naming it and choosing an emoji to represent the palette, that palette is saved via a ```componentDidUpdate``` function that saves the palette into the user's ```window.localStorage```. 
-
 ![palette-saving](https://user-images.githubusercontent.com/19617238/119578117-ca1fca80-bd70-11eb-9c2b-adc84656ba0c.gif)
 </br>
 </br>
 
 * **Color Copying** - once a palette is saved, users are able to open up any saved palettes and copy the HEX or RGB color code from a selected color. Users are also able to adjust the luminosity of their palette in order to suit their needs as well as select from an array of different shades of a select color via the 'more' button.
-
 ![color-copy](https://user-images.githubusercontent.com/19617238/119578109-c429e980-bd70-11eb-925f-9ec2b5b34745.gif)
 </br>
 </br>
