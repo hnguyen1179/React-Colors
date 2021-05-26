@@ -24,7 +24,7 @@ export default class NewPaletteSidebar extends Component {
         this.handleAddColor = this.handleAddColor.bind(this);
         this.handleRecommendColor = throttle(
             this.handleRecommendColor.bind(this),
-            200
+            300
         );
         this.handleGeneratePalette = debounce(
             this.handleGeneratePalette.bind(this),
@@ -33,6 +33,7 @@ export default class NewPaletteSidebar extends Component {
         this.clickClearPalette = this.clickClearPalette.bind(this);
         this.clickEditColor = this.clickEditColor.bind(this);
         this.clickCancelEdit = this.clickCancelEdit.bind(this);
+        this.apiErrorHandler = this.apiErrorHandler.bind(this);
     }
 
     componentDidMount() {
@@ -149,15 +150,31 @@ export default class NewPaletteSidebar extends Component {
         this.resetForm();
     }
 
+    apiErrorHandler(errorMsg) {
+        this.setState(
+            {
+                colorFormErrors: {
+                    colorError: errorMsg,
+                },
+            },
+            () => {
+                setTimeout(() => {
+                    this.resetErrors();
+                }, 3000);
+            }
+        );
+    }
+
     /**
      *
      * Both of the API calls below will need to go through a cors proxy
      * in order to run, due to colormind only being hosted via http and so
      * a mixed-content error comes up
      *
+     * cors proxy: https://guarded-plateau-27863.herokuapp.com/
+     *
      * */
 
-    // https://guarded-plateau-27863.herokuapp.com/ | https://git.heroku.com/guarded-plateau-27863.git
     // Hits the colormind API to generate a random 5-color palette
     handleGeneratePalette() {
         const { setPalette, cancelEdit } = this.props;
@@ -180,7 +197,7 @@ export default class NewPaletteSidebar extends Component {
                 cancelEdit();
             })
             .catch((error) => {
-                // console.log(error);
+                this.apiErrorHandler(error);
             });
     }
 
@@ -188,7 +205,7 @@ export default class NewPaletteSidebar extends Component {
     handleRecommendColor() {
         const { updatePalette, paletteColors } = this.props;
 
-        if (paletteColors.length === 20) return;
+        if (paletteColors.length === 20 || paletteColors.length + 1 > 20) return;
         const newPaletteColors = hexToArray(pickFour(paletteColors));
         newPaletteColors.push("N");
 
@@ -209,7 +226,7 @@ export default class NewPaletteSidebar extends Component {
                 updatePalette(arrayToHex(data.result)[data.result.length - 1]);
             })
             .catch((error) => {
-                // console.log(error);
+                this.apiErrorHandler(error);
             });
     }
 
