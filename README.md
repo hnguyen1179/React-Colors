@@ -6,7 +6,7 @@
 1. [Introduction](#introduction)
 2. [Technologies](#technologies)
 3. [Highlights](#highlights)
-4. [Future Direction](#future-direction)
+4. [Sample Code](#sample-code)
 
 # Introduction
 
@@ -17,94 +17,398 @@ In addition to helping manage color palettes, React Colors also helps you create
 
 ## Technologies
 
-**Frontend** <br/> 
-Travel Seville is entirely built on the front end using Gatsby, which is based on React. The very little state management was done via Session Storage.
-
+**Front end** <br/> 
+React Colors is built entirely on React. Most of the CSS was custom and built with SCSS, with the exception of some dialog boxes/forms done with the Material UI library. Saved palettes persist through ```window.localStorage```.
 
 # Highlights
-* **Smooth Animations** - animations were all done with the help of the GSAP library, CSS transitions, or keyframes ... 
+* **Flexible Palette Creation** - persistent storage of colors within palettes is done via a CRUD system, as users are able to freely generate, edit and delete colors through the application's UI. Once colors are added to the palette, users are able to drag around colors in order to create their own ordered palettes. 
 
-![introduction](https://user-images.githubusercontent.com/19617238/106970555-fc45e780-6701-11eb-807b-3e20a2d1489c.gif)
-</br>
-</br>
-... react-transition-group library was used for the SVG animations
-</br>
-</br>
-![explore](https://user-images.githubusercontent.com/19617238/106970542-f2bc7f80-6701-11eb-9931-2415d58de4dd.gif)
-</br>
+* **Machine Learning Generated Colors** - through the use of the colormind API, users can take advantage of its machine learning model in order to generate a unique, five-swatch color scheme as a base for their palettes. In addition, users can also get recommended colors based on their current color palette.
 
-* **Google Maps API** - Helps users visually see their day trip and allows them to interact with the markers in order to quickly scroll to their destination.
-<img width="1392" alt="GoogleMapsAPI" src="https://user-images.githubusercontent.com/19617238/106971043-f43a7780-6702-11eb-9763-bfbac4909a17.png">
-
+![crud](https://user-images.githubusercontent.com/19617238/119578123-ce4be800-bd70-11eb-84e6-1cc450f359f2.gif)
 </br>
 </br>
 
-![daytrip](https://user-images.githubusercontent.com/19617238/106971518-f2bd7f00-6703-11eb-8604-4bf022facbab.gif)
 
+* **Persistent Palettes** - this project features no back end and so any persistent data is saved via ```window.localStorage```. Once a user creates a palette by naming it and choosing an emoji to represent the palette, that palette is saved via a ```componentDidUpdate``` function that saves the palette into the user's ```window.localStorage```. 
 
-* **Pathfinding Algorithm** - finding the most efficient path across the selected waypoints was done using a genetic algorithm. Included in this genetic algorithm was the use of *simulated annealing* in order to help boost the probablity of finding the most efficient path 
+![palette-saving](https://user-images.githubusercontent.com/19617238/119578117-ca1fca80-bd70-11eb-9c2b-adc84656ba0c.gif)
+</br>
+</br>
+
+* **Color Copying** - once a palette is saved, users are able to open up any saved palettes and copy the HEX or RGB color code from a selected color. Users are also able to adjust the luminosity of their palette in order to suit their needs as well as select from an array of different shades of a select color via the 'more' button.
+
+![color-copy](https://user-images.githubusercontent.com/19617238/119578109-c429e980-bd70-11eb-925f-9ec2b5b34745.gif)
+</br>
+</br>
+  
+# Sample Code
+Shown below is the code for the sidebar used in the new palette creation page. The sidebar is one of the more complicated componenets of this project as it integrates a lot of features like handling color picking, a custom slide in/out function for the sidebar, API calls, and error handling. 
 
   ``` javascript
-  const geneticTSP = points => {
-    const numberOfGenerations = 1000
-    const sizeOfPopulation = 500
-    const generations = []
-    const order = []
-    const mutationRateMin = 0.125
-    const coolingFactor = 0.5
+import React, { Component } from "react";
+import { ChromePicker } from "react-color";
+import { debounce, throttle } from "lodash";
 
-    let currentGeneration = 0
-    let mutationRate = 100
-    let bestConfig
-    let bestFitness = -Infinity
+import {
+    arrayToHex,
+    fontColor,
+    hexToArray,
+    pickFour,
+} from "../utility/ColorUtility";
 
-    // Creating the original orders array
-    for (let i = 0; i < points.length; i++) order[i] = i
+export default class NewPaletteSidebar extends Component {
+    constructor(props) {
+        super(props);
 
-    // Shuffling the order array and creating a Configuration object with unnormalized fitness scores
-    for (let i = 0; i < sizeOfPopulation; i++) {
-      const shuffledOrder = shuffle(order.slice())
-      generations.push(new Configuration(points, shuffledOrder))
+        this.state = {
+            color: "#000000",
+            colorFormErrors: {
+                colorError: "",
+            },
+        };
+
+        this.handleOnChange = debounce(this.handleOnChange.bind(this), 2);
+        this.handleAddColor = this.handleAddColor.bind(this);
+        this.handleRecommendColor = throttle(
+            this.handleRecommendColor.bind(this),
+            200
+        );
+        this.handleGeneratePalette = debounce(
+            this.handleGeneratePalette.bind(this),
+            500
+        );
+        this.clickClearPalette = this.clickClearPalette.bind(this);
+        this.clickEditColor = this.clickEditColor.bind(this);
+        this.clickCancelEdit = this.clickCancelEdit.bind(this);
+        this.apiErrorHandler = this.apiErrorHandler.bind(this);
     }
 
-    // Normalizing the fitness scores of each generation
-    normalizeFitness(generations)
-
-    // Populate new generations based on the fitness probabilites of the previous generations,
-    // mutating them and crossing them over before assigning to a new generation
-    while (currentGeneration < numberOfGenerations) {
-      for (let i = 0; i < generations.length; i++) {
-        const randomConfigurationOne = pickOne(generations)
-        const randomConfigurationTwo = pickOne(generations)
-
-        const randomConfiguration = crossOver(
-          points,
-          randomConfigurationOne,
-          randomConfigurationTwo
-        )
-        
-        const nextMutationRate = mutationRate <= mutationRateMin 
-          ? mutationRateMin 
-          : mutationRate 
-          
-        generations[i] = mutate(randomConfiguration, nextMutationRate);
-      }
-
-      normalizeFitness(generations)
-
-      for (let i = 0; i < generations.length; i++) {
-        if (bestFitness < generations[i].fitness) {
-          bestFitness = generations[i].fitness
-          bestConfig = generations[i]
+    componentDidMount() {
+        // Generates a random palette if currentEdit isn't present in lS
+        if (!localStorage.getItem("currentEdit")) {
+            this.handleGeneratePalette();
         }
-      }
-      currentGeneration++
-      mutationRate = 100 * (coolingFactor ** currentGeneration)
     }
 
-    return bestConfig
-  }
+    // Saves into localStorage the currentEdit
+    componentDidUpdate(prevProps) {
+        // This is to save the current palette in the event that the user
+        // accidentally refreshes the page
+        if (
+            this.props.paletteColors.length !== prevProps.paletteColors.length
+        ) {
+            const stringy = JSON.stringify(this.props.paletteColors);
+            localStorage.setItem("currentEdit", stringy);
+        }
+
+        // This is used to keep track of the current edited color. If a user
+        // clicks on a color, it will update editColor.edit = true
+        // and set the editColor.index, editColor.color, editColor.newColor
+        if (this.props.editColor.color !== prevProps.editColor.color) {
+            this.setState({ color: this.props.editColor.color });
+        }
+    }
+
+    // Resets all of the errors to blank
+    resetErrors() {
+        this.setState((previous) => {
+            return {
+                ...previous,
+                colorFormErrors: {
+                    colorNameError: "",
+                },
+            };
+        });
+    }
+
+    // Resets the form to default; used after adding colors
+    resetForm() {
+        this.setState((previous) => {
+            return {
+                ...previous,
+                color: previous.color,
+            };
+        });
+    }
+
+    // Error Checker for adding colors
+    isValid() {
+        const { paletteColors } = this.props;
+        const { color } = this.state;
+
+        let colorError = "";
+
+        const fullPalette = paletteColors.length === 20;
+
+        const duplicateColor = paletteColors.some((colorFromPalette) => {
+            return colorFromPalette === color;
+        });
+
+        if (duplicateColor) {
+            colorError = (
+                <div className="color-error">
+                    Cannot have duplicate color:
+                    <div
+                        style={{
+                            backgroundColor: color,
+                            border: "1px solid rgba(0, 0, 0, 0.212)",
+                        }}
+                    />
+                </div>
+            );
+        }
+
+        if ([fullPalette, duplicateColor].some((x) => x === true)) {
+            this.setState(
+                {
+                    colorFormErrors: {
+                        colorError,
+                    },
+                },
+                () => {
+                    setTimeout(() => {
+                        this.resetErrors();
+                    }, 3000);
+                }
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Ran when color picker picks a new color, changes the color to edit to color
+     * which requires changing the editColor object's color
+     * */
+
+    handleOnChange(color) {
+        this.setState({ color: color.hex });
+        this.props.changeColor(color.hex);
+    }
+
+    // Updates the palette with a new color
+    handleAddColor(e) {
+        e.preventDefault();
+        if (!this.isValid()) return;
+
+        this.props.updatePalette(this.state.color);
+        this.resetForm();
+    }
+
+    apiErrorHandler(errorMsg) {
+        this.setState(
+            {
+                colorFormErrors: {
+                    colorError: errorMsg,
+                },
+            },
+            () => {
+                setTimeout(() => {
+                    this.resetErrors();
+                }, 3000);
+            }
+        );
+    }
+
+    /**
+     *
+     * Both of the API calls below will need to go through a cors proxy
+     * in order to run, due to colormind only being hosted via http and so
+     * a mixed-content error comes up
+     *
+     * cors proxy: https://guarded-plateau-27863.herokuapp.com/
+     *
+     * */
+
+    // Hits the colormind API to generate a random 5-color palette
+    handleGeneratePalette() {
+        const { setPalette, cancelEdit } = this.props;
+
+        const url =
+            "https://guarded-plateau-27863.herokuapp.com/http://colormind.io/api/";
+        const data = {
+            model: "default",
+        };
+
+        fetch(url, {
+            method: "POST",
+            credentials: "omit",
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setPalette(arrayToHex(data.result));
+                this.setState({ color: "#000000" });
+                cancelEdit();
+            })
+            .catch((error) => {
+                this.apiErrorHandler(error);
+            });
+    }
+
+    // Hits the colormind API to generate a recommended color based on current palette
+    handleRecommendColor() {
+        const { updatePalette, paletteColors } = this.props;
+
+        if (paletteColors.length === 20) return;
+        const newPaletteColors = hexToArray(pickFour(paletteColors));
+        newPaletteColors.push("N");
+
+        const url =
+            "https://guarded-plateau-27863.herokuapp.com/http://colormind.io/api/";
+        const data = {
+            model: "default",
+            input: newPaletteColors,
+        };
+
+        fetch(url, {
+            method: "POST",
+            credentials: "omit",
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                updatePalette(arrayToHex(data.result)[data.result.length - 1]);
+            })
+            .catch((error) => {
+                this.apiErrorHandler(error);
+            });
+    }
+
+    // Clears the palette of all colors
+    clickClearPalette() {
+        const { clearPalette } = this.props;
+        clearPalette();
+        this.setState({ color: "#000000" });
+    }
+
+    // Finalizes the editing a color, changing it within the palette
+    clickEditColor(e) {
+        e.preventDefault();
+        const { updateColor, editColor } = this.props;
+        const { color } = this.state;
+
+        updateColor(editColor.originalColor, color);
+    }
+
+    // Cancels the edit and reverts the color to original color
+    clickCancelEdit(e) {
+        e.preventDefault();
+
+        const { cancelEdit } = this.props;
+        cancelEdit();
+    }
+
+    render() {
+        const {
+            color, // String: hex of current color selected by color picker
+            colorFormErrors: { colorError }, // String: Error Message for duplicates
+        } = this.state;
+
+        const {
+            showSidebar, // Boolean: condition to show sidebar
+            handleSidebarToggle, // Function: opens the sidebar, changing showSidebar in parent
+            paletteColors, // String Array: palette's colors (hex, rgb, rgba)
+            editColor, // Object: {str: color, str: originalColor, bool: edit}
+        } = this.props;
+
+        const editButtons = (
+            // Edit Color menu; has two buttons: confirming the change or canceling it
+            <div className="edit-buttons">
+                <button
+                    className="edit-color-button"
+                    onClick={this.clickEditColor}
+                >
+                    <div>
+                        <h2> Edit Color </h2>
+                    </div>
+                </button>
+
+                <button
+                    className="cancel-edit-button"
+                    onClick={this.clickCancelEdit}
+                >
+                    <div>
+                        <h2> Cancel </h2>
+                    </div>
+                </button>
+            </div>
+        );
+
+        const addButton = (
+            // Add color button
+            <button
+                type="submit"
+                className="add-color-button"
+                disabled={paletteColors.length === 20}
+            >
+                <div
+                    className="add-color-button__text"
+                    style={{
+                        backgroundColor: color,
+                        color: fontColor(color),
+                    }}
+                >
+                    <h2> Add Color</h2>
+                </div>
+            </button>
+        );
+
+        return (
+            <div className={`NewPaletteForm__sidebar ${showSidebar && "show"}`}>
+                {/* Button which toggles hiding of sidebar */}
+                <div className="NewPaletteForm__sidebar__nav">
+                    <div onClick={handleSidebarToggle}>hide tool</div>
+                </div>
+
+                {/* 3 Buttons: generate random palette, recommend color, and clear palette */}
+                <div className="NewPaletteForm__sidebar__head">
+                    <button
+                        className="random-palette-button"
+                        onClick={this.handleGeneratePalette}
+                    >
+                        <h3>Generate Random Palette</h3>
+                    </button>
+                    <button
+                        className="random-color-button"
+                        onClick={this.handleRecommendColor}
+                        disabled={
+                            paletteColors.length < 4 ||
+                            paletteColors.length >= 20
+                        }
+                    >
+                        <h3>Recommend a Color</h3>
+                    </button>
+                    <button
+                        className="clear-button"
+                        onClick={this.clickClearPalette}
+                    >
+                        <h3>Clear Palette</h3>
+                    </button>
+                </div>
+
+                {/* Form that adds color on submission */}
+                <form onSubmit={this.handleAddColor}>
+                    <ChromePicker
+                        disableAlpha
+                        color={color}
+                        onChange={this.handleOnChange}
+                    />
+                    <div className="color-input">
+                        <ul className="error-list">
+                            <li> {colorError} </li>
+                        </ul>
+                    </div>
+
+                    {/* If edit, show edit menu options */}
+                    {editColor.edit ? editButtons : addButton}
+                </form>
+            </div>
+        );
+    }
+}
+
   ```
-  
-## Future Direction
-* Possible mobile integration
