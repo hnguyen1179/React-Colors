@@ -3,6 +3,7 @@
 .Navbar {
     width: 100%;
     height: 6vh;
+    height: calc(var(--vh, 1vh) * 6);
     background-color: $neumorphic-bg-color;
     display: flex;
     justify-content: space-evenly;
@@ -50,7 +51,6 @@
     width: 100%;
 
     .rc-slider {
-        // height: 40px;
         padding: 0;
         display: flex;
         justify-content: center;

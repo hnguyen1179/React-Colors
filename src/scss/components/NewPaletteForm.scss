@@ -27,6 +27,7 @@
 
     &__nav {
         height: 6vh;
+        height: calc(var(--vh, 1vh) * 6);
         width: 100%;
         position: absolute;
         top: 0;
@@ -183,6 +184,7 @@
 .NewPaletteForm__palette-input {
     position: absolute;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.349);
     justify-content: center;
@@ -230,6 +232,7 @@
 
 .NewPaletteForm__main__nav {
     height: 6vh;
+    height: calc(var(--vh, 1vh) * 6);
     padding-left: 3rem;
     background-color: $neumorphic-bg-color;
     color: black;
@@ -282,13 +285,13 @@
 
 .NewPaletteForm__main__content {
     height: calc(100% - 6vh);
+    height: calc(100% - calc(var(--vh, 1vh) * 6))
 }
 
 .NewPaletteForm__main__content__colorbox-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
     height: 100%;
-    // transition: 300ms;
 }
 
 .draggable-colorbox-container {

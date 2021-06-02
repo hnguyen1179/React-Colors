@@ -26,6 +26,19 @@ export default class App extends Component {
     }
 
     /**
+     * This is used for mobile integration. vH in mobile is obscured by
+     * the browser's navigation UI, and so we have to recalculate the 
+     * vH (viewHeight) variable depending on whether the navigation is 
+     * on screen or not
+     * */
+    componentDidMount() {
+        window.addEventListener("resize", () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty("--vh", `${vh}px`);
+        });
+    }
+
+    /**
      * Whenever a palette is deleted or added, localStorage for the
      * currentEdit is removed and the lS key for palettes is updated
      **/

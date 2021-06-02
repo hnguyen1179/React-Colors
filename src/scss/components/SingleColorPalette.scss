@@ -2,6 +2,7 @@
 
 .SCP {
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     width: 100vw;
     overflow: hidden;
     display: flex;
@@ -71,11 +72,13 @@
 
 .SCP__footer {
     height: 5vh;
+    height: calc(var(--vh, 1vh) * 5);
     background: white;
 }
 
 .SCP__footer {
     height: 5vh;
+    height: calc(var(--vh, 1vh) * 5);
     width: 100%;
     display: flex;
     justify-content: flex-end;
