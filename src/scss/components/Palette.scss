@@ -2,7 +2,7 @@
 
 .Palette {
     height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
+    height: calc(var(--vH, 1vh) * 100);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
 
 .Palette-footer {
     height: 5vh;
-    height: calc(var(--vh, 1vh) * 5);
+    height: calc(var(--vH, 1vh) * 5);
     width: 100%;
     display: flex;
     justify-content: flex-end;
