@@ -409,8 +409,9 @@ export default class NewPaletteSidebar extends Component {
     }
 }
 
-  ```
-  
-  
+  ```  
+</br>
+</br>
+
 # Future Features
-In the future, I'm looking to implement machine learning model that will extract a color palette from a randomly grabbed image every time the user clicks 'Generate Palette'. Generating color palettes can be thought of as a clustering problem in disguise, wherein we would want to divide all of an image's pixels into k different groups that best represent the image. 
+In the future, I'm looking to implement my own machine learning model that will extract a color palette from a randomly grabbed image every time the user clicks 'Generate Palette'. Generating color palettes can be thought of as a clustering problem in disguise, wherein we would want to divide all of an image's pixels into k different groups that best represent the image. 
